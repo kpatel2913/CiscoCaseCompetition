@@ -1,0 +1,73 @@
+export const mockMeetings = [
+  {
+    id: "mtg-1",
+    title: "Q3 Product Roadmap Review",
+    host: "u1",
+    hostName: "Sarah Chen",
+    startTime: "2025-10-14T14:00:00Z",
+    endTime: "2025-10-14T15:00:00Z",
+    attendees: ["u1", "u2", "u3", "u5", "me"],
+    attendeeCount: 5,
+    meetingNumber: "123 456 7890",
+    password: "acme2025",
+    status: "upcoming",
+    type: "scheduled"
+  },
+  {
+    id: "mtg-2",
+    title: "Platform Sync — Weekly",
+    host: "u2",
+    hostName: "Marcus Williams",
+    startTime: "2025-10-14T16:30:00Z",
+    endTime: "2025-10-14T17:00:00Z",
+    attendees: ["u2", "u6", "u8", "me"],
+    attendeeCount: 4,
+    meetingNumber: "987 654 3210",
+    password: "platform",
+    status: "upcoming",
+    type: "recurring"
+  },
+  {
+    id: "mtg-3",
+    title: "AI Advisory Panel — Demo Day",
+    host: "me",
+    hostName: "Alex Morgan",
+    startTime: "2025-10-15T10:00:00Z",
+    endTime: "2025-10-15T11:30:00Z",
+    attendees: ["me", "u1", "u5", "u4", "u7"],
+    attendeeCount: 5,
+    meetingNumber: "555 123 4567",
+    password: "demo2025",
+    status: "upcoming",
+    type: "scheduled"
+  },
+  {
+    id: "mtg-4",
+    title: "Design System Review",
+    host: "u3",
+    hostName: "Priya Patel",
+    startTime: "2025-10-15T13:00:00Z",
+    endTime: "2025-10-15T14:00:00Z",
+    attendees: ["u3", "u1", "u7", "me"],
+    attendeeCount: 4,
+    meetingNumber: "444 777 8888",
+    password: "design",
+    status: "upcoming",
+    type: "scheduled"
+  },
+  {
+    id: "rec-1",
+    title: "Q2 Business Review",
+    host: "u4",
+    hostName: "James Okafor",
+    startTime: "2025-09-28T09:00:00Z",
+    endTime: "2025-09-28T10:30:00Z",
+    attendees: ["u4", "u7", "u9", "me"],
+    attendeeCount: 4,
+    meetingNumber: "111 222 3333",
+    status: "recorded",
+    type: "recorded",
+    duration: "1h 28m",
+    recordingUrl: "#"
+  }
+];

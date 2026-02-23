@@ -1,0 +1,122 @@
+export const mockUsers = [
+  {
+    id: "u1",
+    name: "Sarah Chen",
+    title: "Product Manager",
+    department: "Engineering",
+    email: "s.chen@acme.com",
+    avatar: null,
+    presence: "active",
+    timezone: "PST",
+    initials: "SC",
+    color: "#00BCF0"
+  },
+  {
+    id: "u2",
+    name: "Marcus Williams",
+    title: "Senior Engineer",
+    department: "Platform",
+    email: "m.williams@acme.com",
+    avatar: null,
+    presence: "active",
+    timezone: "EST",
+    initials: "MW",
+    color: "#3FD47A"
+  },
+  {
+    id: "u3",
+    name: "Priya Patel",
+    title: "UX Designer",
+    department: "Design",
+    email: "p.patel@acme.com",
+    avatar: null,
+    presence: "away",
+    timezone: "CST",
+    initials: "PP",
+    color: "#FFD166"
+  },
+  {
+    id: "u4",
+    name: "James Okafor",
+    title: "VP of Sales",
+    department: "Sales",
+    email: "j.okafor@acme.com",
+    avatar: null,
+    presence: "dnd",
+    timezone: "EST",
+    initials: "JO",
+    color: "#FF4F4F"
+  },
+  {
+    id: "u5",
+    name: "Aiko Tanaka",
+    title: "Data Scientist",
+    department: "Analytics",
+    email: "a.tanaka@acme.com",
+    avatar: null,
+    presence: "active",
+    timezone: "PST",
+    initials: "AT",
+    color: "#B388FF"
+  },
+  {
+    id: "u6",
+    name: "Liam O'Brien",
+    title: "DevOps Engineer",
+    department: "Infrastructure",
+    email: "l.obrien@acme.com",
+    avatar: null,
+    presence: "offline",
+    timezone: "GMT",
+    initials: "LO",
+    color: "#FF9F1C"
+  },
+  {
+    id: "u7",
+    name: "Diana Foster",
+    title: "Marketing Lead",
+    department: "Marketing",
+    email: "d.foster@acme.com",
+    avatar: null,
+    presence: "active",
+    timezone: "EST",
+    initials: "DF",
+    color: "#F72585"
+  },
+  {
+    id: "u8",
+    name: "Kevin Zhao",
+    title: "Security Analyst",
+    department: "Security",
+    email: "k.zhao@acme.com",
+    avatar: null,
+    presence: "away",
+    timezone: "PST",
+    initials: "KZ",
+    color: "#4CC9F0"
+  },
+  {
+    id: "u9",
+    name: "Elena Rossi",
+    title: "Customer Success",
+    department: "Support",
+    email: "e.rossi@acme.com",
+    avatar: null,
+    presence: "active",
+    timezone: "CET",
+    initials: "ER",
+    color: "#7BFF8B"
+  },
+  {
+    id: "me",
+    name: "Alex Morgan",
+    title: "Product Strategist",
+    department: "Strategy",
+    email: "a.morgan@acme.com",
+    avatar: null,
+    presence: "active",
+    timezone: "PST",
+    initials: "AM",
+    color: "#00BCF0"
+  }
+];

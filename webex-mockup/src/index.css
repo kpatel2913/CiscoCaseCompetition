@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --webex-blue:       #00BCF0;
+  --webex-dark-blue:  #005E7A;
+  --webex-navy:       #07202E;
+  --webex-surface:    #0E2D3D;
+  --webex-border:     #1A3D50;
+  --webex-text:       #E8F4F8;
+  --webex-muted:      #7BAFC4;
+  --webex-green:      #3FD47A;
+  --webex-red:        #FF4F4F;
+  --webex-yellow:     #FFD166;
+
+  --text-xs:   11px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-lg:   18px;
+  --text-xl:   22px;
+  --text-2xl:  28px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: var(--text-base);
+  color: var(--webex-text);
+  background: var(--webex-navy);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--webex-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--webex-muted);
+}
+
+/* App shell */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--webex-navy);
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  background: var(--webex-surface);
+}
+
+/* Utility classes */
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.glass {
+  background: rgba(14, 45, 61, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--webex-border);
+}
+
+.glow-blue {
+  box-shadow: 0 0 0 2px var(--webex-blue), 0 0 20px rgba(0, 188, 240, 0.3);
+}
+
+.text-blue { color: var(--webex-blue); }
+.text-muted { color: var(--webex-muted); }
+.text-green { color: var(--webex-green); }
+.text-red { color: var(--webex-red); }
+.text-yellow { color: var(--webex-yellow); }
+
+.bg-navy { background: var(--webex-navy); }
+.bg-surface { background: var(--webex-surface); }
+.border-webex { border-color: var(--webex-border); }
+
+/* Mention highlight */
+.mention {
+  color: var(--webex-blue);
+  background: rgba(0, 188, 240, 0.1);
+  border-radius: 3px;
+  padding: 0 2px;
+}
