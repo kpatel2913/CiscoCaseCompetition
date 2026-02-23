@@ -135,6 +135,10 @@ const useAppStore = create((set, get) => ({
   // Join modal
   joinModalOpen: false,
   setJoinModalOpen: (open) => set({ joinModalOpen: open }),
+
+  // Pre-join lobby modal
+  preJoinModalOpen: false,
+  setPreJoinModalOpen: (open) => set({ preJoinModalOpen: open }),
 }));
 
 export default useAppStore;
