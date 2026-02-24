@@ -2,11 +2,15 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import meetingRoutes from './routes/meetings.js';
 
-// Load .env first, then .env.local (local overrides win)
-dotenv.config({ path: '.env' });
-dotenv.config({ path: '.env.local' });
+// Resolve __dirname for ES modules
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Load env from the root-level .env (one folder up from server/)
+dotenv.config({ path: resolve(__dirname, '../.env') });
 
 const app = express();
 
@@ -29,6 +33,6 @@ mongoose
   })
   .catch((err) => {
     console.error('❌ MongoDB connection failed:', err.message);
-    console.error('   Make sure MONGO_URI is set in server/.env');
+    console.error('   Make sure MONGO_URI is set in the root .env file');
     process.exit(1);
   });

@@ -36,20 +36,25 @@ mongodb+srv://myuser:mypassword@cluster0.abcde.mongodb.net/?retryWrites=true&w=m
 
 ---
 
-## Step 3 — Configure Server Environment
+## Step 3 — Configure Environment Variables
+
+All environment variables live in a **single `.env` file at the project root** (next to this README).
 
 ```bash
-cd /Users/kris/Desktop/Code/Projects/CiscoCaseCompetition/server
+cd /Users/kris/Desktop/Code/Projects/CiscoCaseCompetition
 
 # Copy the example env file
 cp .env.example .env
 ```
 
-Edit `server/.env`:
+Edit `.env`:
 ```env
 MONGO_URI=mongodb+srv://myuser:mypassword@cluster0.abcde.mongodb.net/webex-mockup?retryWrites=true&w=majority
 GEMINI_API_KEY=AIzaSy...your_key_here...
 ```
+
+> ℹ️ The server (`server/index.js`) loads `../.env` automatically.
+> Vite also reads from the root via `envDir: '../'` in `vite.config.js`.
 
 ---
 
@@ -107,25 +112,35 @@ If you don't configure MongoDB/Gemini, the app still works — camera, mic, and 
 
 ## File Structure Added
 
-```
-server/
-├── index.js              # Express entry point (port 3001)
-├── package.json           # ESM + @google/generative-ai deps
-├── .env.example           # Template for env vars
-├── models/
-│   └── Meeting.js         # Mongoose schema
-└── routes/
-    └── meetings.js        # 5 REST endpoints + Gemini summary
+## File Structure
 
-webex-mockup/src/
-├── hooks/
-│   └── useTranscription.js    # Web Speech API hook
-├── views/
-│   ├── InCallView.jsx         # Upgraded with live camera + Transcript panel
-│   └── MeetingRecapView.jsx   # Full recap display (new)
-├── store/
-│   └── useAppStore.js         # Updated with transcript state + backend calls
-└── components/meetings/
-    ├── CallControls.jsx        # onEndMeeting prop wired to backend /end
-    └── MeetingsHome.jsx        # Recaps tab fetches from /api/meetings
 ```
+CiscoCaseCompetition/
+├── .env                   # ← ALL secrets live here (gitignored)
+├── .env.example           # ← Template — commit this, not .env
+├── .gitignore             # ← Covers whole monorepo
+├── package.json           # ← `npm run dev` starts both backend + frontend
+│
+├── server/
+│   ├── index.js           # Express entry point (port 3001)
+│   ├── package.json       # ESM + @google/generative-ai deps
+│   ├── models/
+│   │   └── Meeting.js     # Mongoose schema
+│   └── routes/
+│       └── meetings.js    # 5 REST endpoints + Gemini summary
+│
+└── webex-mockup/
+    ├── vite.config.js     # envDir: '../' points Vite at root .env
+    └── src/
+        ├── hooks/
+        │   └── useTranscription.js    # Web Speech API hook
+        ├── views/
+        │   ├── InCallView.jsx         # Live camera + Transcript panel
+        │   └── MeetingRecapView.jsx   # Full recap display
+        ├── store/
+        │   └── useAppStore.js         # Transcript state + backend calls
+        └── components/meetings/
+            ├── CallControls.jsx       # onEndMeeting wired to backend /end
+            └── MeetingsHome.jsx       # Recaps tab fetches from /api/meetings
+```
+
