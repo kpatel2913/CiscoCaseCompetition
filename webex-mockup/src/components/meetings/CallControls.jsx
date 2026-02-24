@@ -65,7 +65,7 @@ function IconBtn({ icon: Icon, onClick, active }) {
   );
 }
 
-export default function CallControls() {
+export default function CallControls({ onEndMeeting }) {
   const {
     micMuted, toggleMic,
     cameraOff, toggleCamera,
@@ -73,10 +73,20 @@ export default function CallControls() {
     isScreenSharing, toggleScreenShare,
     participantsPanelOpen, toggleParticipantsPanel,
     chatPanelOpen, toggleChatPanel,
-    endCall
+    endCall,
+    meetingId,
   } = useAppStore();
 
   const [showEndConfirm, setShowEndConfirm] = useState(false);
+
+  const handleLeave = () => {
+    setShowEndConfirm(false);
+    if (onEndMeeting) {
+      onEndMeeting(meetingId);
+    } else {
+      endCall();
+    }
+  };
 
   return (
     <div
@@ -181,7 +191,7 @@ export default function CallControls() {
                     Stay
                   </button>
                   <button
-                    onClick={() => { setShowEndConfirm(false); endCall(); }}
+                    onClick={handleLeave}
                     className="flex-1 py-2 rounded-lg text-xs font-medium cursor-pointer"
                     style={{ background: WX.red, color: '#fff', border: 'none' }}
                     onMouseEnter={e => e.currentTarget.style.filter = 'brightness(1.1)'}

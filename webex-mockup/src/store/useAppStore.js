@@ -26,7 +26,6 @@ const useAppStore = create((set, get) => ({
         [spaceId]: [...(state.messages[spaceId] || []), newMsg]
       }
     }));
-    // Simulate typing indicator + response after a delay
     set({ typingInSpace: spaceId });
     setTimeout(() => set({ typingInSpace: null }), 3000);
   },
@@ -67,8 +66,45 @@ const useAppStore = create((set, get) => ({
   inCallMessages: [],
   activeSpeakerIndex: 0,
 
-  joinCall: (meeting) => {
-    set({ isInCall: true, currentMeeting: meeting, callDuration: 0 });
+  // Transcript / Recap state
+  meetingId: null,
+  transcriptSegments: [],
+  interimText: '',
+  recapMeetingId: null,
+
+  appendTranscriptSegment: (segment) =>
+    set((state) => ({ transcriptSegments: [...state.transcriptSegments, segment] })),
+  setInterimText: (text) => set({ interimText: text }),
+
+  joinCall: async (meeting) => {
+    set({
+      isInCall: true,
+      currentMeeting: meeting,
+      callDuration: 0,
+      transcriptSegments: [],
+      interimText: '',
+      meetingId: null,
+    });
+
+    // Start backend meeting document
+    try {
+      const res = await fetch('/api/meetings/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: meeting?.title || "Kris Patel's Meeting",
+          hostName: 'Kris Patel',
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        set({ meetingId: data.meetingId });
+      }
+    } catch (err) {
+      // Backend not running — still allow in-browser experience
+      console.warn('Could not reach backend to start meeting:', err.message);
+    }
+
     const timer = setInterval(() => {
       set((state) => ({ callDuration: state.callDuration + 1 }));
     }, 1000);
@@ -79,10 +115,14 @@ const useAppStore = create((set, get) => ({
     }, 4000);
     set({ callTimer: timer, speakerCycleTimer: speakerCycle });
   },
-  endCall: () => {
-    const { callTimer, speakerCycleTimer } = get();
+
+  endCall: async (recapId) => {
+    const { callTimer, speakerCycleTimer, meetingId } = get();
     if (callTimer) clearInterval(callTimer);
     if (speakerCycleTimer) clearInterval(speakerCycleTimer);
+
+    const resolvedRecapId = recapId || meetingId;
+
     set({
       isInCall: false,
       currentMeeting: null,
@@ -96,17 +136,31 @@ const useAppStore = create((set, get) => ({
       participantsPanelOpen: false,
       chatPanelOpen: false,
       inCallMessages: [],
-      activeSpeakerIndex: 0
+      activeSpeakerIndex: 0,
+      transcriptSegments: [],
+      interimText: '',
     });
-    set({ activeView: 'meetings', showMeetingEndedToast: true });
-    setTimeout(() => set({ showMeetingEndedToast: false }), 4000);
+
+    if (resolvedRecapId) {
+      set({ recapMeetingId: resolvedRecapId, activeView: 'meeting-recap' });
+    } else {
+      set({ activeView: 'meetings', showMeetingEndedToast: true });
+      setTimeout(() => set({ showMeetingEndedToast: false }), 4000);
+    }
   },
+
   toggleMic: () => set((state) => ({ micMuted: !state.micMuted })),
   toggleCamera: () => set((state) => ({ cameraOff: !state.cameraOff })),
   toggleRecording: () => set((state) => ({ isRecording: !state.isRecording })),
   toggleScreenShare: () => set((state) => ({ isScreenSharing: !state.isScreenSharing })),
-  toggleParticipantsPanel: () => set((state) => ({ participantsPanelOpen: !state.participantsPanelOpen, chatPanelOpen: false })),
-  toggleChatPanel: () => set((state) => ({ chatPanelOpen: !state.chatPanelOpen, participantsPanelOpen: false })),
+  toggleParticipantsPanel: () => set((state) => ({
+    participantsPanelOpen: !state.participantsPanelOpen,
+    chatPanelOpen: false
+  })),
+  toggleChatPanel: () => set((state) => ({
+    chatPanelOpen: !state.chatPanelOpen,
+    participantsPanelOpen: false
+  })),
   sendInCallMessage: (text) => {
     set((state) => ({
       inCallMessages: [...state.inCallMessages, {

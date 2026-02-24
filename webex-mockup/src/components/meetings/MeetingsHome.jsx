@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Info, X, Video, ArrowRight, CalendarPlus, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Copy, Info, X, Video, ArrowRight, CalendarPlus, ChevronDown, ChevronLeft, ChevronRight, Clock, CheckSquare, Loader } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
 
 const WX_COLORS = {
@@ -43,10 +43,24 @@ function DinoIllustration() {
 }
 
 export default function MeetingsHome() {
-  const { setPreJoinModalOpen, setJoinModalOpen } = useAppStore();
+  const { setPreJoinModalOpen, setJoinModalOpen, setActiveView, recapMeetingId } = useAppStore();
   const [copied, setCopied] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [activeTab, setActiveTab] = useState('calendar');
+  const [recaps, setRecaps] = useState([]);
+  const [recapsLoading, setRecapsLoading] = useState(false);
+  const [recapsError, setRecapsError] = useState(null);
+
+  // Fetch recaps when tab is selected
+  useEffect(() => {
+    if (activeTab !== 'recaps') return;
+    setRecapsLoading(true);
+    setRecapsError(null);
+    fetch('/api/meetings')
+      .then((r) => r.json())
+      .then((data) => { setRecaps(Array.isArray(data) ? data : []); setRecapsLoading(false); })
+      .catch(() => { setRecapsError('Could not load recaps — is the backend running?'); setRecapsLoading(false); });
+  }, [activeTab]);
 
   const today = new Date();
   const dateLabel = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
@@ -249,11 +263,106 @@ export default function MeetingsHome() {
         )}
       </AnimatePresence>
 
-      {/* Empty state */}
-      <div className="flex flex-col items-center justify-center flex-1 pb-16" style={{ gap: 12 }}>
-        <DinoIllustration />
-        <p className="text-sm text-center" style={{ color: WX_COLORS.muted }}>When you schedule or are invited</p>
-        <p className="text-sm text-center" style={{ color: WX_COLORS.muted }}>to a meeting, it'll show up here.</p>
+      {/* Tab body */}
+      {activeTab === 'calendar' && (
+        /* Empty state */
+        <div className="flex flex-col items-center justify-center flex-1 pb-16" style={{ gap: 12 }}>
+          <DinoIllustration />
+          <p className="text-sm text-center" style={{ color: WX_COLORS.muted }}>When you schedule or are invited</p>
+          <p className="text-sm text-center" style={{ color: WX_COLORS.muted }}>to a meeting, it'll show up here.</p>
+        </div>
+      )}
+
+      {activeTab === 'recaps' && (
+        <div className="flex-1 px-8 py-4">
+          {recapsLoading && (
+            <div className="flex items-center justify-center py-16 gap-3" style={{ color: WX_COLORS.muted }}>
+              <Loader size={18} style={{ animation: 'spin 1s linear infinite' }} />
+              <span style={{ fontSize: 13 }}>Loading recaps…</span>
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+          )}
+          {!recapsLoading && recapsError && (
+            <div className="flex flex-col items-center justify-center py-16 gap-3" style={{ color: WX_COLORS.muted }}>
+              <p style={{ fontSize: 13 }}>{recapsError}</p>
+            </div>
+          )}
+          {!recapsLoading && !recapsError && recaps.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 gap-3">
+              <DinoIllustration />
+              <p style={{ fontSize: 13, color: WX_COLORS.muted, textAlign: 'center' }}>No meeting recaps yet.</p>
+              <p style={{ fontSize: 12, color: WX_COLORS.muted, textAlign: 'center' }}>Start and end a meeting to see your recap here.</p>
+            </div>
+          )}
+          {!recapsLoading && !recapsError && recaps.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {recaps.map((recap) => (
+                <RecapCard
+                  key={recap.meetingId || recap._id}
+                  recap={recap}
+                  onView={() => {
+                    useAppStore.getState().recapMeetingId = recap.meetingId;
+                    useAppStore.setState({ recapMeetingId: recap.meetingId, activeView: 'meeting-recap' });
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RecapCard({ recap, onView }) {
+  const durationMin = recap.durationMs ? Math.floor(recap.durationMs / 60000) : null;
+  const date = recap.startedAt
+    ? new Date(recap.startedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : '—';
+  const summarySnippet = recap.summary
+    ? recap.summary.slice(0, 100) + (recap.summary.length > 100 ? '…' : '')
+    : 'No summary available.';
+
+  return (
+    <div
+      className="rounded-2xl p-4"
+      style={{ background: WX_COLORS.surface, border: `1px solid ${WX_COLORS.border}` }}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-sm" style={{ color: WX_COLORS.text }}>
+              {recap.title || 'Untitled Meeting'}
+            </span>
+            {durationMin && (
+              <span
+                className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold flex-shrink-0"
+                style={{ background: 'rgba(7,216,124,0.15)', color: WX_COLORS.green }}
+              >
+                <Clock size={10} /> {durationMin}m
+              </span>
+            )}
+            {recap.actionItems?.length > 0 && (
+              <span
+                className="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold flex-shrink-0"
+                style={{ background: 'rgba(0,188,240,0.15)', color: WX_COLORS.cyan }}
+              >
+                <CheckSquare size={10} /> {recap.actionItems.length} actions
+              </span>
+            )}
+          </div>
+          <p style={{ fontSize: 12, color: WX_COLORS.muted, margin: '4px 0 6px' }}>{date}</p>
+          <p style={{ fontSize: 13, color: '#B0B0B5', lineHeight: 1.5 }}>{summarySnippet}</p>
+        </div>
+        <button
+          onClick={onView}
+          className="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium flex-shrink-0"
+          style={{ background: 'rgba(0,188,240,0.15)', color: WX_COLORS.cyan, border: `1px solid rgba(0,188,240,0.3)`, cursor: 'pointer' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,188,240,0.25)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,188,240,0.15)'}
+        >
+          View recap <ArrowRight size={11} />
+        </button>
       </div>
     </div>
   );
