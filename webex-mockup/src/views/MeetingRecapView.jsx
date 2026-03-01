@@ -7,9 +7,9 @@ import {
 import useAppStore from '../store/useAppStore';
 
 const WX = {
-  bg: '#1C1C1E',
-  surface: '#2C2C2E',
-  border: '#3A3A3C',
+  bg: '#000000',
+  surface: '#0D0D0D',
+  border: 'var(--webex-border)',
   text: '#FFFFFF',
   muted: '#8E8E93',
   green: '#07D87C',

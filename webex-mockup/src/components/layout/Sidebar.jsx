@@ -2,16 +2,19 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MessageSquare, Video, Phone, Users, Settings,
-  Grid3x3, ChevronRight
+  Grid3x3, ChevronRight, Network, Sun, Package
 } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
 
 const navItems = [
-  { id: 'messaging', icon: MessageSquare, label: 'Messaging' },
-  { id: 'meetings', icon: Video, label: 'Meetings' },
-  { id: 'calling', icon: Phone, label: 'Calling' },
-  { id: 'people', icon: Users, label: 'People' },
-  { id: 'apps', icon: Grid3x3, label: 'Apps' },
+  { id: 'messaging',  icon: MessageSquare, label: 'Messaging' },
+  { id: 'meetings',   icon: Video,         label: 'Meetings' },
+  { id: 'calling',   icon: Phone,          label: 'Calling' },
+  { id: 'people',    icon: Users,          label: 'People' },
+  { id: 'apps',      icon: Grid3x3,        label: 'Apps' },
+  { id: 'workgraph', icon: Network,        label: 'Workgraph', badge: 'NEW' },
+  { id: 'briefing',  icon: Sun,            label: 'Daily Briefing', badge: 'NEW' },
+  { id: 'workflows', icon: Package,        label: 'Workflow Packs', badge: 'NEW' },
 ];
 
 export default function Sidebar() {
@@ -41,7 +44,7 @@ export default function Sidebar() {
             style={{
               width: 32,
               height: 32,
-              background: 'linear-gradient(135deg, #00BCF0, #005E7A)',
+              background: 'linear-gradient(135deg, #00BCF0, #000000)',
               color: '#fff',
               fontSize: 11,
               letterSpacing: '-0.03em'
@@ -90,7 +93,7 @@ export default function Sidebar() {
                 style={{
                   height: 40,
                   padding: '0 10px',
-                  background: isActive ? 'rgba(0,188,240,0.12)' : 'transparent',
+                  background: isActive ? 'rgba(255,255,255,0.06)' : 'transparent',
                   color: isActive ? 'var(--webex-blue)' : 'var(--webex-muted)',
                   border: 'none',
                   cursor: 'pointer'
@@ -102,7 +105,16 @@ export default function Sidebar() {
                   if (!isActive) e.currentTarget.style.background = 'transparent';
                 }}
               >
-                <Icon size={18} style={{ flexShrink: 0 }} />
+                <div style={{ position: 'relative', flexShrink: 0 }}>
+                  <Icon size={18} />
+                  {!expanded && navItems.find(n => n.id === id)?.badge && (
+                    <span style={{
+                      position: 'absolute', top: -4, right: -4,
+                      width: 6, height: 6, borderRadius: '50%',
+                      background: '#00BCF0', display: 'block'
+                    }} />
+                  )}
+                </div>
                 <AnimatePresence>
                   {expanded && (
                     <motion.span
@@ -110,8 +122,18 @@ export default function Sidebar() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -8 }}
                       className="text-sm font-medium whitespace-nowrap"
+                      style={{ display: 'flex', alignItems: 'center', gap: 6 }}
                     >
                       {label}
+                      {navItems.find(n => n.id === id)?.badge && (
+                        <span style={{
+                          fontSize: 9, fontWeight: 700, letterSpacing: '0.05em',
+                          color: '#00BCF0', background: 'rgba(0,188,240,0.15)',
+                          borderRadius: 20, padding: '1px 5px',
+                        }}>
+                          {navItems.find(n => n.id === id).badge}
+                        </span>
+                      )}
                     </motion.span>
                   )}
                 </AnimatePresence>
@@ -122,7 +144,7 @@ export default function Sidebar() {
                 <div
                   className="absolute left-14 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap pointer-events-none z-50"
                   style={{
-                    background: '#0E2D3D',
+                    background: '#121212',
                     border: '1px solid var(--webex-border)',
                     color: 'var(--webex-text)',
                     boxShadow: '0 4px 16px rgba(0,0,0,0.4)'

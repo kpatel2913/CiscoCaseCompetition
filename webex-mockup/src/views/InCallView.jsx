@@ -9,9 +9,9 @@ import CallControls from '../components/meetings/CallControls';
 import { useTranscription } from '../hooks/useTranscription';
 
 const WX = {
-  bg: '#1C1C1E',
-  surface: '#2C2C2E',
-  border: '#3A3A3C',
+  bg: '#000000',
+  surface: '#0D0D0D',
+  border: 'var(--webex-border)',
   text: '#FFFFFF',
   muted: '#8E8E93',
   green: '#07D87C',
@@ -98,7 +98,7 @@ function ParticipantsPanel() {
         <div className="flex items-center gap-3 py-2 rounded-lg px-2">
           <div
             className="flex items-center justify-center rounded-full font-semibold flex-shrink-0"
-            style={{ width: 36, height: 36, background: '#3A3A3C', color: WX.text, fontSize: 13 }}
+            style={{ width: 36, height: 36, background: '#252528', color: WX.text, fontSize: 13 }}
           >
             KP
           </div>
@@ -216,7 +216,7 @@ function VideoTiles({ localVideoRef, cameraOn }) {
           >
             <div
               className="flex items-center justify-center rounded-full font-bold"
-              style={{ width: 72, height: 72, background: '#3A3A3C', fontSize: 24, color: WX.text }}
+              style={{ width: 72, height: 72, background: '#252528', fontSize: 24, color: WX.text }}
             >
               KP
             </div>

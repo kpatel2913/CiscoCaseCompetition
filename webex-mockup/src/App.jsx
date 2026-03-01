@@ -8,6 +8,9 @@ import CallingView from './views/CallingView';
 import PeopleView from './views/PeopleView';
 import InCallView from './views/InCallView';
 import MeetingRecapView from './views/MeetingRecapView';
+import WorkgraphView from './views/WorkgraphView';
+import DailyBriefingView from './views/DailyBriefingView';
+import WorkflowsView from './views/WorkflowsView';
 import { CheckCircle } from 'lucide-react';
 
 function Toast({ message, visible }) {
@@ -43,6 +46,9 @@ function ViewRenderer({ view }) {
     people: <PeopleView key="people" />,
     incall: <InCallView key="incall" />,
     'meeting-recap': <MeetingRecapView key="meeting-recap" />,
+    workgraph: <WorkgraphView key="workgraph" />,
+    briefing: <DailyBriefingView key="briefing" />,
+    workflows: <WorkflowsView key="workflows" />,
     apps: (
       <motion.div
         key="apps"
