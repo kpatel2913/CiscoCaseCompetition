@@ -76,15 +76,15 @@ export default function Sidebar() {
             <div
               key={id}
               className="relative"
+              style={{ height: 40 }}
               onMouseEnter={() => setHoveredItem(id)}
               onMouseLeave={() => setHoveredItem(null)}
             >
               {/* Active indicator */}
               {isActive && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r"
-                  style={{ width: 3, height: 20, background: 'var(--webex-blue)' }}
+                <div
+                  className="absolute left-0 rounded-r"
+                  style={{ width: 3, height: 20, top: 10, background: 'var(--webex-blue)' }}
                 />
               )}
               <button
