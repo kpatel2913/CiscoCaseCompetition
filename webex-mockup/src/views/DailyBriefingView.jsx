@@ -9,6 +9,19 @@ import {
   HEADS_UP, UPCOMING, SOURCE_MEETINGS, SUGGESTED_QUESTIONS, MOCK_MEETING_CONTEXT
 } from '../data/briefingData';
 
+// ─────────────────────────────────────────────
+//  Briefing text spoken aloud
+// ─────────────────────────────────────────────
+const BRIEFING_TEXT = `
+  Good morning Kris. Here's your briefing for today.
+  Your most critical meeting is the Q3 Roadmap Sync at 2pm.
+  The API rate-limiting decision has been deferred 3 times — today is the forcing function.
+  You have 2 overdue action items: Review the API spec draft, and send the Q3 scope doc to Maya.
+  The billing and nursing teams haven't synced in 11 days — the Workgraph flagged this this morning.
+  One pending decision: API rate-limiting — be ready to make the call today.
+  You're prepared. Have a good day.
+`;
+
 const DURATION = 58;
 
 function formatTime(s) {
@@ -126,19 +139,128 @@ const WAVEFORM_HEIGHTS = Array.from({ length: 40 }, (_, i) =>
 // ─────────────────────────────────────────────
 function BriefingPlayer({ onSectionChange, elapsed, setElapsed }) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const audioRef = useRef(null);
 
+  // Cleanup on unmount
   useEffect(() => {
-    if (!isPlaying) return;
-    const interval = setInterval(() => {
-      setElapsed(prev => {
-        if (prev >= DURATION) { setIsPlaying(false); return DURATION; }
-        const next = Math.round((prev + 0.1) * 10) / 10;
-        onSectionChange(getSectionAtTime(next));
-        return next;
+    return () => {
+      if (audioRef.current) audioRef.current.pause();
+      window.speechSynthesis?.cancel();
+    };
+  }, []);
+
+  const speakBriefing = useCallback(async () => {
+    setIsLoading(true);
+    setIsPlaying(false);
+    setElapsed(0);
+
+    const briefingText = `
+      Good morning, Kris. Here's your daily briefing.
+      Your most important meeting today is the Q3 Roadmap Sync at 2pm.
+      The API rate-limiting decision has been deferred three times — today is likely the forcing function. Be ready to make the call.
+      You have two overdue action items. First: review the API spec draft, which was due two days ago.
+      Second: send the Q3 scope document to Maya before end of day.
+      One thing to watch — the billing and nursing teams haven't synced in 11 days.
+      The Workgraph flagged a 67 percent drop in cross-team communication. Worth addressing today.
+      That's your briefing. You're ahead of it. Have a great day.
+    `;
+
+    try {
+      // Use your ElevenLabs voice directly
+      const VOICE_ID = 'ErXwobaYiN019PkySvjV';
+
+      const response = await fetch(
+        `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}?output_format=mp3_44100_128`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'xi-api-key': import.meta.env.VITE_ELEVENLABS_API_KEY,
+          },
+          body: JSON.stringify({
+            text: briefingText,
+            model_id: 'eleven_turbo_v2_5',
+            voice_settings: {
+              stability:        0.5,
+              similarity_boost: 0.75,
+              style:            0.3,
+              use_speaker_boost: true,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const err = await response.json();
+        console.error('ElevenLabs error:', JSON.stringify(err, null, 2));
+        setIsLoading(false);
+        return;
+      }
+
+      const audioBlob = await response.blob();
+      const audioUrl  = URL.createObjectURL(audioBlob);
+      const audio     = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      let interval = null;
+
+      // Wire ALL handlers before play()
+      audio.addEventListener('play', () => {
+        setIsLoading(false);
+        setIsPlaying(true);
+        interval = setInterval(() => {
+          const t = Math.floor(audio.currentTime);
+          setElapsed(t);
+          onSectionChange(getSectionAtTime(t));
+        }, 100);
       });
-    }, 100);
-    return () => clearInterval(interval);
-  }, [isPlaying, onSectionChange, setElapsed]);
+
+      audio.addEventListener('ended', () => {
+        if (interval) clearInterval(interval);
+        setIsPlaying(false);
+        setElapsed(Math.ceil(audio.duration) || DURATION);
+        URL.revokeObjectURL(audioUrl);
+      });
+
+      audio.addEventListener('error', (e) => {
+        console.error('Audio error:', e);
+        if (interval) clearInterval(interval);
+        setIsPlaying(false);
+        setIsLoading(false);
+      });
+
+      // play() returns a Promise — catch autoplay policy errors
+      try {
+        await audio.play();
+      } catch (playErr) {
+        console.error('audio.play() failed:', playErr);
+        setIsLoading(false);
+        setIsPlaying(false);
+      }
+
+    } catch (err) {
+      console.error('ElevenLabs fetch failed:', err);
+      setIsLoading(false);
+      setIsPlaying(false);
+    }
+  }, [onSectionChange, setElapsed]);
+
+  const stopSpeaking = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+  }, []);
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      stopSpeaking();
+    } else {
+      speakBriefing();
+    }
+  };
 
   const progress = elapsed / DURATION;
 
@@ -150,17 +272,28 @@ function BriefingPlayer({ onSectionChange, elapsed, setElapsed }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
         {/* Play/Pause */}
         <button
-          onClick={() => setIsPlaying(p => !p)}
+          onClick={handlePlayPause}
+          disabled={isLoading}
           style={{
             width: 36, height: 36, borderRadius: '50%', border: 'none',
-            background: 'linear-gradient(135deg, #07D87C, #00BCF0)',
+            background: isLoading
+              ? '#252528'
+              : 'linear-gradient(135deg, #07D87C, #00BCF0)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', flexShrink: 0, boxShadow: '0 4px 12px rgba(7,216,124,0.3)',
+            cursor: isLoading ? 'default' : 'pointer',
+            flexShrink: 0, boxShadow: isLoading ? 'none' : '0 4px 12px rgba(7,216,124,0.3)',
+            transition: 'background 0.2s, box-shadow 0.2s',
           }}
         >
-          {isPlaying
-            ? <Pause size={16} style={{ color: '#000' }} />
-            : <Play size={16} style={{ color: '#000', marginLeft: 2 }} />
+          {isLoading
+            ? <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 0.9, ease: 'linear' }}
+                style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid #5E5E63', borderTopColor: '#07D87C' }}
+              />
+            : isPlaying
+              ? <Pause size={16} style={{ color: '#000' }} />
+              : <Play size={16} style={{ color: '#000', marginLeft: 2 }} />
           }
         </button>
 
@@ -179,10 +312,13 @@ function BriefingPlayer({ onSectionChange, elapsed, setElapsed }) {
           ))}
         </div>
 
-        {/* Time */}
-        <span style={{ fontSize: 12, color: '#8E8E93', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
-          {formatTime(elapsed)} / {formatTime(DURATION)}
-        </span>
+        {/* Time / loading label */}
+        {isLoading
+          ? <span style={{ fontSize: 11, color: '#07D87C', flexShrink: 0, fontStyle: 'italic' }}>Generating…</span>
+          : <span style={{ fontSize: 12, color: '#8E8E93', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
+              {formatTime(elapsed)} / {formatTime(DURATION)}
+            </span>
+        }
       </div>
 
       {/* Scrubber */}
@@ -196,6 +332,10 @@ function BriefingPlayer({ onSectionChange, elapsed, setElapsed }) {
           const v = Number(e.target.value);
           setElapsed(v);
           onSectionChange(getSectionAtTime(v));
+          if (isPlaying && audioRef.current) {
+            audioRef.current.pause();
+            setIsPlaying(false);
+          }
         }}
         className="progress-slider"
         style={{
@@ -204,7 +344,7 @@ function BriefingPlayer({ onSectionChange, elapsed, setElapsed }) {
       />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
-        <span style={{ fontSize: 10, color: '#5E5E63' }}>🎙 AI-generated briefing · 58 seconds</span>
+        <span style={{ fontSize: 10, color: '#5E5E63' }}>🎙 AI-generated briefing · Rachel (ElevenLabs)</span>
         <span style={{ fontSize: 10, color: '#5E5E63' }}>Covers: {SECTION_TIMES.length} topics</span>
       </div>
     </div>
@@ -554,34 +694,8 @@ function DifferentiatorCard() {
 }
 
 // ─────────────────────────────────────────────
-//  Markdown-lite renderer (bold only)
+//  Gemini API
 // ─────────────────────────────────────────────
-function MessageText({ content }) {
-  const parts = content.split(/(\*\*[^*]+\*\*)/g);
-  return (
-    <span style={{ fontSize: 13, lineHeight: 1.6, color: '#C0C0C8', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-      {parts.map((part, i) => {
-        if (part.startsWith('**') && part.endsWith('**')) {
-          return <strong key={i} style={{ color: '#E8F4F8' }}>{part.slice(2, -2)}</strong>;
-        }
-        return <span key={i}>{part}</span>;
-      })}
-    </span>
-  );
-}
-
-// ─────────────────────────────────────────────
-//  AI Chat Panel
-// ─────────────────────────────────────────────
-const INITIAL_MESSAGES = [
-  {
-    role: 'assistant',
-    content: `Good morning, Kris! I've reviewed your last 6 meetings. Here's what I think you should know before your day starts:\n\nThe **API rate-limiting decision** has been deferred 3 times in a row. Today's roadmap sync is likely your window to close it.\n\nYou also have **2 overdue action items** — want me to help you knock those out or send a status update?`,
-    suggestions: ['Pull discussion thread', 'Draft status update', 'Skip for now'],
-    timestamp: '7:02 AM',
-  },
-];
-
 async function callGemini(messages, userInput) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   const systemContext = `You are Webex AI, an intelligent meeting assistant for Kris Patel (Product Manager).
@@ -595,7 +709,6 @@ Format key items as bullet points when listing multiple things.
 Always reference which meeting context you're drawing from.
 Offer a follow-up action or question at the end of each response.`;
 
-  // Build Gemini contents array (context + history + new message)
   const contents = [
     { role: 'user', parts: [{ text: systemContext }] },
     { role: 'model', parts: [{ text: "Understood. I'm ready to help Kris with their meeting context." }] },
@@ -628,13 +741,43 @@ Offer a follow-up action or question at the end of each response.`;
     || 'Sorry, I had trouble processing that. Please try again.';
 }
 
+// ─────────────────────────────────────────────
+//  Markdown-lite renderer (bold only)
+// ─────────────────────────────────────────────
+function MessageText({ content }) {
+  const parts = content.split(/(\*\*[^*]+\*\*)/g);
+  return (
+    <span style={{ fontSize: 13, lineHeight: 1.6, color: '#C0C0C8', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+      {parts.map((part, i) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return <strong key={i} style={{ color: '#E8F4F8' }}>{part.slice(2, -2)}</strong>;
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </span>
+  );
+}
+
+// ─────────────────────────────────────────────
+//  AI Chat Panel
+// ─────────────────────────────────────────────
+const INITIAL_MESSAGES = [
+  {
+    role: 'assistant',
+    content: `Good morning, Kris! I've reviewed your last 6 meetings. Here's what I think you should know before your day starts:\n\nThe **API rate-limiting decision** has been deferred 3 times in a row. Today's roadmap sync is likely your window to close it.\n\nYou also have **2 overdue action items** — want me to help you knock those out or send a status update?`,
+    suggestions: ['Pull discussion thread', 'Draft status update', 'Skip for now'],
+    timestamp: '7:02 AM',
+  },
+];
+
+
+
 function AIChatPanel() {
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [isTyping, setIsTyping] = useState(false);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll to bottom on new message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
