@@ -35,7 +35,7 @@ html, body, #root {
 }
 
 body {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: var(--text-base);
   color: var(--webex-text);
   background: var(--webex-navy);

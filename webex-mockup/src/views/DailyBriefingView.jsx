@@ -1292,7 +1292,7 @@ export default function DailyBriefingView() {
             <HeadsUpCard onToast={showToast} scenarioData={scenarioData} />
           </BriefingSection>
 
-          <BriefingSection id="upcoming" icon="" title="Upcoming this week" isActive={activeSection === 'upcoming'} defaultOpen={false}>
+          <BriefingSection id="upcoming" icon="" title="Upcoming this week" isActive={activeSection === 'upcoming'} defaultOpen={true}>
             <UpcomingCard />
           </BriefingSection>
 
