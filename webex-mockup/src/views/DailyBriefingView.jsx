@@ -2,12 +2,52 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play, Pause, ChevronDown, ChevronUp, Send, Bot, X,
-  CheckCircle, AlertCircle, Info
+  CheckCircle, AlertCircle, Info, Mic, MicOff, Upload as UploadIcon
 } from 'lucide-react';
+
 import {
   SECTION_TIMES, getSectionAtTime, ACTION_ITEMS, DECISIONS,
   HEADS_UP, UPCOMING, SOURCE_MEETINGS, SUGGESTED_QUESTIONS, MOCK_MEETING_CONTEXT
 } from '../data/briefingData';
+
+// ─────────────────────────────────────────────
+//  Scenario Helpers
+// ─────────────────────────────────────────────
+export const parseBriefingFromScenario = (text) => {
+  const extract = (label) => {
+    const regex = new RegExp(`\\[${label}\\]([\\s\\S]*?)(?=\\[|$)`, 'i');
+    const match = text.match(regex);
+    return match ? match[1].trim() : null;
+  };
+
+  return {
+    summary:     extract('SUMMARY')      || extract('WHAT MATTERS')  || null,
+    actionItems: extract('ACTION ITEMS') || extract('ACTIONS')       || null,
+    decisions:   extract('DECISIONS')                                || null,
+    headsUp:     extract('HEADS UP')     || extract('ALERTS')        || null,
+    raw:         text,
+  };
+};
+
+export const getWelcomeMessage = (scenarioText) => ({
+  role: 'assistant',
+  content: scenarioText
+    ? `I've loaded your scenario file. Ask me anything about the context, or I can give you a quick summary of what's in it to get started.`
+    : `Good morning! I've reviewed your last 6 meetings. Here's what I think you should know before your day starts:\n\nThe **API rate-limiting decision** has been deferred 3 times in a row. Today's roadmap sync is likely your window to close it.\n\nYou also have **2 overdue action items** — want me to help you knock those out or send a status update?`,
+  timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+  suggestions: scenarioText ? undefined : ['Pull discussion thread', 'Draft status update', 'Skip for now']
+});
+
+export const buildSystemPrompt = (scenarioData) => {
+  const context = scenarioData
+    ? `The following is the context for this demo session. Use this as your source of truth for all questions:\n\n${scenarioData}`
+    : `You have access to this user's meeting history from the past week:\n\n${JSON.stringify(MOCK_MEETING_CONTEXT, null, 2)}`;
+
+  return `You are Webex AI, an intelligent meeting assistant built into the Cisco Webex platform.
+${context}
+
+You are proactive, concise, and conversational. Answers should be 2-4 sentences max unless the user asks for more detail. Always reference which meeting or piece of context you are drawing from. Offer a follow-up action or question at the end of each response.`;
+};
 
 // ─────────────────────────────────────────────
 //  Briefing text spoken aloud
@@ -103,7 +143,7 @@ function ReadinessGauge({ score = 84 }) {
 // ─────────────────────────────────────────────
 //  Greeting Header
 // ─────────────────────────────────────────────
-function GreetingHeader() {
+function GreetingHeader({ scenarioData, scenarioFileName, handleFileUpload, clearScenario }) {
   return (
     <div className="greeting-header" style={{
       height: 100, flexShrink: 0,
@@ -121,7 +161,29 @@ function GreetingHeader() {
         </p>
       </motion.div>
       <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3, duration: 0.5 }}>
-        <ReadinessGauge score={84} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          <div className="scenario-loader">
+            {scenarioData ? (
+              <div className="scenario-active">
+                <span className="scenario-dot" />
+                <span className="scenario-filename">{scenarioFileName}</span>
+                <button className="scenario-clear" onClick={clearScenario}>✕</button>
+              </div>
+            ) : (
+              <label className="scenario-upload-btn">
+                <UploadIcon size={14} />
+                Load scenario
+                <input
+                  type="file"
+                  accept=".txt"
+                  style={{ display: 'none' }}
+                  onChange={handleFileUpload}
+                />
+              </label>
+            )}
+          </div>
+          <ReadinessGauge score={84} />
+        </div>
       </motion.div>
     </div>
   );
@@ -407,7 +469,16 @@ function BriefingSection({ id, icon, title, isActive, children, defaultOpen = tr
 // ─────────────────────────────────────────────
 //  Card 1: What Matters Today
 // ─────────────────────────────────────────────
-function WhatMattersCard() {
+function WhatMattersCard({ scenarioData }) {
+  if (scenarioData) {
+    const briefing = parseBriefingFromScenario(scenarioData);
+    return (
+      <div style={{ fontSize: 13, color: '#C0C0C8', lineHeight: 1.7 }}>
+        <p style={{ whiteSpace: 'pre-wrap' }}>{briefing.summary || briefing.raw?.slice(0, 300)}</p>
+      </div>
+    );
+  }
+
   return (
     <div style={{ fontSize: 13, color: '#C0C0C8', lineHeight: 1.7 }}>
       <p>
@@ -432,12 +503,22 @@ function WhatMattersCard() {
 // ─────────────────────────────────────────────
 //  Card 2: Action Items
 // ─────────────────────────────────────────────
-function ActionItemsCard({ onToast }) {
+function ActionItemsCard({ onToast, scenarioData }) {
   const [checked, setChecked] = useState(() => {
     const init = {};
     ACTION_ITEMS.forEach(i => { if (i.defaultChecked) init[i.id] = true; });
     return init;
   });
+
+  if (scenarioData) {
+    const briefing = parseBriefingFromScenario(scenarioData);
+    if (!briefing.actionItems) return <div style={{ fontSize: 13, color: '#C0C0C8' }}>No action items found in scenario.</div>;
+    return (
+      <div style={{ fontSize: 13, color: '#C0C0C8', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+        {briefing.actionItems}
+      </div>
+    );
+  }
 
   const priorityColor = { high: '#FF6B6B', medium: '#FFB830', done: '#07D87C' };
 
@@ -507,7 +588,17 @@ function ActionItemsCard({ onToast }) {
 // ─────────────────────────────────────────────
 //  Card 3: Decisions
 // ─────────────────────────────────────────────
-function DecisionsCard() {
+function DecisionsCard({ scenarioData }) {
+  if (scenarioData) {
+    const briefing = parseBriefingFromScenario(scenarioData);
+    if (!briefing.decisions) return <div style={{ fontSize: 13, color: '#C0C0C8' }}>No decisions found in scenario.</div>;
+    return (
+      <div style={{ fontSize: 13, color: '#C0C0C8', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+        {briefing.decisions}
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
       {DECISIONS.map(d => (
@@ -547,7 +638,17 @@ function DecisionsCard() {
 // ─────────────────────────────────────────────
 //  Card 4: Heads Up
 // ─────────────────────────────────────────────
-function HeadsUpCard({ onToast }) {
+function HeadsUpCard({ onToast, scenarioData }) {
+  if (scenarioData) {
+    const briefing = parseBriefingFromScenario(scenarioData);
+    if (!briefing.headsUp) return <div style={{ fontSize: 13, color: '#C0C0C8' }}>No heads up items found in scenario.</div>;
+    return (
+      <div style={{ fontSize: 13, color: '#C0C0C8', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+        {briefing.headsUp}
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {HEADS_UP.map(h => (
@@ -694,52 +795,40 @@ function DifferentiatorCard() {
 }
 
 // ─────────────────────────────────────────────
-//  Gemini API
+//  ElevenLabs TTS
 // ─────────────────────────────────────────────
-async function callGemini(messages, userInput) {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  const systemContext = `You are Webex AI, an intelligent meeting assistant for Kris Patel (Product Manager).
-You have access to this user's meeting history from the past week:
+const speakText = async (text) => {
+  try {
+    const response = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${import.meta.env.VITE_ELEVENLABS_VOICE_ID}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'xi-api-key': import.meta.env.VITE_ELEVENLABS_API_KEY,
+        },
+        body: JSON.stringify({
+          text,
+          model_id: 'eleven_turbo_v2',
+          voice_settings: {
+            stability: 0.5,
+            similarity_boost: 0.75,
+            style: 0.3,
+            use_speaker_boost: true,
+          },
+        })
+      }
+    );
 
-${JSON.stringify(MOCK_MEETING_CONTEXT, null, 2)}
-
-You are proactive, concise, and conversational.
-Answers should be 2-4 sentences max unless the user asks for more detail.
-Format key items as bullet points when listing multiple things.
-Always reference which meeting context you're drawing from.
-Offer a follow-up action or question at the end of each response.`;
-
-  const contents = [
-    { role: 'user', parts: [{ text: systemContext }] },
-    { role: 'model', parts: [{ text: "Understood. I'm ready to help Kris with their meeting context." }] },
-    ...messages
-      .filter(m => m.role === 'user' || m.role === 'assistant')
-      .map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }],
-      })),
-    { role: 'user', parts: [{ text: userInput }] },
-  ];
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents }),
-    }
-  );
-
-  if (!res.ok) {
-    const errText = await res.text();
-    console.error('Gemini API error:', res.status, errText);
-    throw new Error(`Gemini API ${res.status}`);
+    const audioBlob = await response.blob();
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(audioUrl);
+    audio.onended = () => URL.revokeObjectURL(audioUrl);
+    await audio.play();
+  } catch (err) {
+    console.error('ElevenLabs speakText error:', err);
   }
-
-  const data = await res.json();
-  return data?.candidates?.[0]?.content?.parts?.[0]?.text
-    || 'Sorry, I had trouble processing that. Please try again.';
-}
+};
 
 // ─────────────────────────────────────────────
 //  Markdown-lite renderer (bold only)
@@ -761,51 +850,184 @@ function MessageText({ content }) {
 // ─────────────────────────────────────────────
 //  AI Chat Panel
 // ─────────────────────────────────────────────
-const INITIAL_MESSAGES = [
-  {
-    role: 'assistant',
-    content: `Good morning, Kris! I've reviewed your last 6 meetings. Here's what I think you should know before your day starts:\n\nThe **API rate-limiting decision** has been deferred 3 times in a row. Today's roadmap sync is likely your window to close it.\n\nYou also have **2 overdue action items** — want me to help you knock those out or send a status update?`,
-    suggestions: ['Pull discussion thread', 'Draft status update', 'Skip for now'],
-    timestamp: '7:02 AM',
-  },
-];
-
-
-
-function AIChatPanel({ onClose }) {
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+function AIChatPanel({ onClose, messages, setMessages, scenarioData }) {
+  const [conversationHistory, setConversationHistory] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [input, setInput] = useState('');
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  const SYSTEM_PROMPT = buildSystemPrompt(scenarioData);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  const sendMessage = useCallback(async (userInput) => {
-    if (!userInput.trim()) return;
+  const sendMessage = async (userInput) => {
+    if (!userInput.trim() || isTyping || isListening) return;
+
     const userMsg = { role: 'user', content: userInput, timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) };
     setMessages(prev => [...prev, userMsg]);
-    setInput('');
+    setConversationHistory(prev => [...prev, { role: 'user', parts: [{ text: userInput }] }]);
     setIsTyping(true);
+    setInput('');
 
     try {
-      const text = await callGemini(messages, userInput);
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: {
+              parts: [{ text: SYSTEM_PROMPT }]
+            },
+            contents: [
+              ...conversationHistory,
+              { role: 'user', parts: [{ text: userInput }] }
+            ],
+            generationConfig: {
+              maxOutputTokens: 400,
+              temperature: 0.7,
+            }
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.error) {
+        console.error('Gemini error:', data.error);
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `Error: ${data.error.message}`,
+          timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+        }]);
+        return;
+      }
+
+      const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
+
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: text,
+        content: aiText,
         timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
       }]);
-    } catch (e) {
+
+      setConversationHistory(prev => [
+        ...prev,
+        { role: 'model', parts: [{ text: aiText }] }
+      ]);
+
+    } catch (err) {
+      console.error('Gemini fetch error:', err);
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `I'm having trouble connecting right now. Based on your recent meetings, the key thing to focus on today is the **API rate-limiting decision** in your 2pm Q3 Roadmap Sync.`,
+        content: 'Connection error — check that VITE_GEMINI_API_KEY is set in your .env file.',
         timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
       }]);
     } finally {
       setIsTyping(false);
     }
-  }, [messages]);
+  };
+
+  const sendMessageWithVoiceReply = async (userInput) => {
+    if (!userInput.trim()) return;
+
+    const userMsg = { role: 'user', content: userInput, timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) };
+    setMessages(prev => [...prev, userMsg]);
+    setConversationHistory(prev => [...prev, { role: 'user', parts: [{ text: userInput }] }]);
+    setIsTyping(true);
+    setInput('');
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            contents: [
+              ...conversationHistory,
+              { role: 'user', parts: [{ text: userInput }] }
+            ],
+            generationConfig: { maxOutputTokens: 400, temperature: 0.7 }
+          })
+        }
+      );
+
+      const data = await response.json();
+      const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
+
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: aiText,
+        timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+      }]);
+
+      setConversationHistory(prev => [
+        ...prev,
+        { role: 'model', parts: [{ text: aiText }] }
+      ]);
+
+      await speakText(aiText);
+
+    } catch (err) {
+      console.error('Voice reply error:', err);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const startListening = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Voice input requires Chrome or Safari.');
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map(r => r[0].transcript)
+        .join('');
+
+      setInput(transcript);
+
+      if (event.results[event.results.length - 1].isFinal) {
+        recognition.stop();
+        setIsListening(false);
+        sendMessageWithVoiceReply(transcript);
+      }
+    };
+
+    recognition.onerror = (e) => {
+      console.warn('Speech error:', e.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => setIsListening(false);
+
+    recognition.start();
+  };
+
+  const toggleVoiceMode = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    } else {
+      startListening();
+    }
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input); }
@@ -927,18 +1149,27 @@ function AIChatPanel({ onClose }) {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask anything about your week..."
+          placeholder={isListening ? 'Listening...' : 'Ask anything about your week...'}
+          disabled={isTyping || isListening}
           style={{
             flex: 1, background: '#121212', border: '1px solid var(--webex-border)',
             borderRadius: 10, padding: '9px 13px', fontSize: 13, color: '#E8F4F8',
             outline: 'none', fontFamily: 'inherit',
+            opacity: isListening ? 0.7 : 1,
           }}
           onFocus={e => e.target.style.borderColor = '#00BCF0'}
           onBlur={e => e.target.style.borderColor = '#3A3A3C'}
         />
         <button
+          className={`voice-btn ${isListening ? 'voice-btn--active' : ''}`}
+          onClick={toggleVoiceMode}
+          title="Talk to Webex AI"
+        >
+          {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+        </button>
+        <button
           onClick={() => sendMessage(input)}
-          disabled={isTyping || !input.trim()}
+          disabled={isTyping || isListening || !input.trim()}
           style={{
             width: 36, height: 36, borderRadius: 10, border: 'none', flexShrink: 0,
             background: input.trim() ? 'linear-gradient(135deg, #00BCF0, #07D87C)' : '#252528',
@@ -963,6 +1194,32 @@ export default function DailyBriefingView() {
   const [toast, setToast] = useState({ visible: false, message: '' });
   const [chatOpen, setChatOpen] = useState(false);
 
+  // New scenario state
+  const [scenarioData, setScenarioData] = useState(null);
+  const [scenarioFileName, setScenarioFileName] = useState('');
+  const [scenarioExpanded, setScenarioExpanded] = useState(false);
+  const [chatMessages, setChatMessages] = useState(() => [getWelcomeMessage(null)]);
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setScenarioData(event.target.result);
+      setScenarioFileName(file.name);
+      setChatMessages([getWelcomeMessage(event.target.result)]);
+      setScenarioExpanded(true);
+    };
+    reader.readAsText(file);
+  };
+
+  const clearScenario = () => {
+    setScenarioData(null);
+    setScenarioFileName('');
+    setChatMessages([getWelcomeMessage(null)]);
+  };
+
   const showToast = useCallback((msg) => {
     setToast({ visible: true, message: msg });
     setTimeout(() => setToast({ visible: false, message: '' }), 3000);
@@ -980,7 +1237,12 @@ export default function DailyBriefingView() {
       exit={{ opacity: 0 }}
       style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: '#111113', overflow: 'hidden' }}
     >
-      <GreetingHeader />
+      <GreetingHeader 
+        scenarioData={scenarioData} 
+        scenarioFileName={scenarioFileName} 
+        handleFileUpload={handleFileUpload} 
+        clearScenario={clearScenario} 
+      />
 
       {/* Main content — full width now that chat is a drawer */}
       <div className="briefing-main" style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
@@ -988,6 +1250,22 @@ export default function DailyBriefingView() {
           width: '100%', overflowY: 'auto', padding: '16px 20px',
           display: 'flex', flexDirection: 'column', gap: 0,
         }}>
+          {scenarioData && (
+            <div className="scenario-preview-card">
+              <div
+                className="scenario-preview-header"
+                onClick={() => setScenarioExpanded(p => !p)}
+              >
+                <span className="scenario-dot" />
+                <span>Scenario loaded — <strong>{scenarioFileName}</strong></span>
+                <span className="scenario-chevron" style={{ marginLeft: 'auto' }}>{scenarioExpanded ? '∧' : '∨'}</span>
+              </div>
+              {scenarioExpanded && (
+                <pre className="scenario-preview-content">{scenarioData}</pre>
+              )}
+            </div>
+          )}
+
           <BriefingPlayer
             elapsed={elapsed}
             setElapsed={setElapsed}
@@ -995,19 +1273,19 @@ export default function DailyBriefingView() {
           />
 
           <BriefingSection id="what-matters" icon="🎯" title="What matters today" isActive={activeSection === 'what-matters'}>
-            <WhatMattersCard />
+            <WhatMattersCard scenarioData={scenarioData} />
           </BriefingSection>
 
           <BriefingSection id="action-items" icon="📋" title="Open action items" isActive={activeSection === 'action-items'}>
-            <ActionItemsCard onToast={showToast} />
+            <ActionItemsCard onToast={showToast} scenarioData={scenarioData} />
           </BriefingSection>
 
           <BriefingSection id="decisions" icon="⚡" title="Decisions made this week" isActive={activeSection === 'decisions'}>
-            <DecisionsCard />
+            <DecisionsCard scenarioData={scenarioData} />
           </BriefingSection>
 
           <BriefingSection id="heads-up" icon="🔮" title="Heads up" isActive={activeSection === 'heads-up'}>
-            <HeadsUpCard onToast={showToast} />
+            <HeadsUpCard onToast={showToast} scenarioData={scenarioData} />
           </BriefingSection>
 
           <BriefingSection id="upcoming" icon="📅" title="Upcoming this week" isActive={activeSection === 'upcoming'} defaultOpen={false}>
@@ -1038,7 +1316,12 @@ export default function DailyBriefingView() {
             exit={{ opacity: 0, y: 40, scale: 0.96 }}
             transition={{ type: 'spring', stiffness: 320, damping: 28 }}
           >
-            <AIChatPanel onClose={() => setChatOpen(false)} />
+            <AIChatPanel
+              onClose={() => setChatOpen(false)}
+              messages={chatMessages}
+              setMessages={setChatMessages}
+              scenarioData={scenarioData}
+            />
           </motion.div>
         )}
       </AnimatePresence>

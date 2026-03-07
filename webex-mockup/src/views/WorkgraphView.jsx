@@ -423,7 +423,6 @@ function TeamHealthTab() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 18 }}>🔥</span>
             <span style={{ fontWeight: 700, fontSize: 13, color: '#E8F4F8' }}>Digital Exhaustion Risk</span>
           </div>
           {badge('HIGH RISK', '#FF6B6B', 'rgba(255,107,107,0.15)')}
@@ -442,7 +441,6 @@ function TeamHealthTab() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 18 }}>📡</span>
             <span style={{ fontWeight: 700, fontSize: 13, color: '#E8F4F8' }}>Communication Gaps</span>
           </div>
           {badge('3 GAPS', '#FFB830', 'rgba(255,184,48,0.15)')}
@@ -467,7 +465,6 @@ function TeamHealthTab() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 18 }}>🎯</span>
             <span style={{ fontWeight: 700, fontSize: 13, color: '#E8F4F8' }}>Alignment Score</span>
           </div>
           {badge('MODERATE', '#FFD166', 'rgba(255,209,102,0.15)')}

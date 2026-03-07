@@ -181,7 +181,7 @@ function WorkflowPreviewModal({ pack, onClose }) {
   );
 }
 
-function WorkflowPackCard({ pack, isActive, onActivate, onPreview }) {
+function WorkflowPackCard({ pack, isActive, onActivate, onPreview, onManage }) {
   return (
     <motion.div 
       layout
@@ -234,7 +234,9 @@ function WorkflowPackCard({ pack, isActive, onActivate, onPreview }) {
           Preview workflows
         </button>
         {isActive ? (
-          <button className="btn-manage">Manage <ChevronRight size={14} className="inline ml-1" /></button>
+          <button className="btn-manage" onClick={() => (pack.id === 'hc-care-coordination') ? onManage(pack) : null}>
+            Manage <ChevronRight size={14} className="inline ml-1" />
+          </button>
         ) : (
           <button className="btn-activate" onClick={() => onActivate(pack)}>
             Activate Pack
@@ -389,6 +391,7 @@ export default function WorkflowsView() {
                     isActive={activePacks.includes(pack.id)}
                     onActivate={handleActivate}
                     onPreview={setPreview}
+                    onManage={handleActivationComplete}
                   />
                 ))}
               </motion.div>

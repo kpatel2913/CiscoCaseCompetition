@@ -185,6 +185,8 @@ export default function LiveWorkflowDashboard({ isActivated, onBack }) {
   const [activeWorkflow, setActiveWorkflow] = useState(null);
   const [webexMessages, setWebexMessages] = useState([]);
 
+  const [activeTab, setActiveTab] = useState('workflows');
+
   useEffect(() => {
     if (!isActivated) return;
 
@@ -230,9 +232,27 @@ export default function LiveWorkflowDashboard({ isActivated, onBack }) {
         </div>
       </header>
 
+      {/* Mobile Tabs */}
+      <div className="dashboard-mobile-tabs px-4 py-3 bg-[#0D0D0D] border-b border-[var(--webex-border)] md:hidden">
+        <div className="flex bg-black rounded-lg p-1 border border-white/5">
+          <button 
+            onClick={() => setActiveTab('workflows')}
+            className={`flex-1 py-2 text-xs font-bold rounded-md transition-all ${activeTab === 'workflows' ? 'bg-[#2C2C2E] text-white shadow-sm' : 'text-gray-500'}`}
+          >
+            Active Workflows
+          </button>
+          <button 
+            onClick={() => setActiveTab('activity')}
+            className={`flex-1 py-2 text-xs font-bold rounded-md transition-all ${activeTab === 'activity' ? 'bg-[#2C2C2E] text-white shadow-sm' : 'text-gray-500'}`}
+          >
+            Live Activity
+          </button>
+        </div>
+      </div>
+
       <div className="live-dashboard-content flex-1 flex overflow-hidden">
         {/* Left Panel — Active Workflows */}
-        <div className="active-workflows-panel flex-1 p-6 overflow-y-auto custom-scrollbar border-r border-[var(--webex-border)]">
+        <div className={`active-workflows-panel flex-1 p-6 overflow-y-auto custom-scrollbar border-r border-[var(--webex-border)] ${activeTab !== 'workflows' ? 'hidden md:block' : ''}`}>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-sm font-bold text-white uppercase tracking-wider">Active Workflows (8)</h2>
           </div>
@@ -248,7 +268,7 @@ export default function LiveWorkflowDashboard({ isActivated, onBack }) {
         </div>
 
         {/* Right Panel — Live Activity Feed */}
-        <div className="activity-feed-panel w-[400px] bg-[#0D0D0D] flex flex-col overflow-hidden shrink-0">
+        <div className={`activity-feed-panel w-[400px] bg-[#0D0D0D] flex flex-col overflow-hidden shrink-0 ${activeTab !== 'activity' ? 'hidden md:block' : ''}`}>
           <div className="activity-feed-header p-4 border-b border-[var(--webex-border)] flex justify-between items-center">
             <span className="text-sm font-bold text-white">Live Activity</span>
             <div className="live-indicator">
