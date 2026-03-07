@@ -186,7 +186,7 @@ function TranscriptPanel({ segments, interimText, onClose }) {
 // ─── Video Tiles ────────────────────────────────────────────────────────────
 function VideoTiles({ localVideoRef, cameraOn }) {
   return (
-    <div className="flex flex-col flex-1 gap-3 p-4 overflow-hidden">
+    <div className="video-tiles flex flex-col flex-1 gap-3 p-4 overflow-hidden">
       {/* You tile */}
       <div
         className="flex-1 rounded-2xl relative overflow-hidden flex items-end"
@@ -461,7 +461,9 @@ export default function InCallView() {
               transition={{ type: 'spring', stiffness: 280, damping: 30 }}
               style={{ overflow: 'hidden', flexShrink: 0 }}
             >
-              <ParticipantsPanel />
+              <div className="participants-panel-mobile" style={{ height: '100%' }}>
+                <ParticipantsPanel />
+              </div>
             </motion.div>
           )}
 
@@ -484,8 +486,10 @@ export default function InCallView() {
         </AnimatePresence>
       </div>
 
-      {/* Bottom call controls — pass handleEndMeeting */}
-      <CallControls onEndMeeting={handleEndMeeting} />
+      {/* Bottom call controls */}
+      <div className="control-bar">
+        <CallControls onEndMeeting={handleEndMeeting} />
+      </div>
     </motion.div>
   );
 }

@@ -834,7 +834,7 @@ function KPITile({ item }) {
 
 function KPIBar() {
   return (
-    <div style={{
+    <div className="kpi-bar" style={{
       display: 'flex', height: 80, background: '#141416',
       borderTop: '1px solid #2A2A2C', flexShrink: 0,
     }}>
@@ -889,7 +889,7 @@ function RightPanel({ onShowToast }) {
   };
 
   return (
-    <div style={{
+    <div className="wg-right-panel-inner" style={{
       width: '35%', minWidth: 300, background: 'var(--wg-panel-bg)',
       borderLeft: '1px solid #2A2A2C', display: 'flex', flexDirection: 'column',
       overflow: 'hidden',
@@ -951,12 +951,12 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
   );
 
   return (
-    <div style={{
+    <div className="wg-filter-bar" style={{
       height: 52, background: '#141416', borderBottom: '1px solid #2A2A2C',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '0 20px', flexShrink: 0, gap: 12,
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+      <div className="wg-filter-pills" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
         {DEPT_LIST.map(dept =>
           pill(dept, deptFilter === dept, () => setDeptFilter(dept),
             dept !== 'All' ? DEPT_COLORS[dept] : null)
@@ -1036,9 +1036,9 @@ export default function WorkgraphView() {
       />
 
       {/* Main split area */}
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      <div className="wg-main" style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         {/* Graph Panel — 65% */}
-        <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+        <div className="wg-graph" style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
           <GraphPanel
             deptFilter={deptFilter}
             onNodeClick={setSelectedNode}
@@ -1083,7 +1083,9 @@ export default function WorkgraphView() {
         </div>
 
         {/* Right Panel — 35% */}
-        <RightPanel onShowToast={showToast} />
+        <div className="wg-right-panel">
+          <RightPanel onShowToast={showToast} />
+        </div>
       </div>
 
       <KPIBar />

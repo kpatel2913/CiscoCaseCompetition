@@ -627,3 +627,297 @@ input[type="range"].progress-slider::-webkit-slider-thumb {
 .check-green { color: #07D87C; font-weight: bold; }
 .cross-red { color: #FF6B6B; }
 .warn-amber { color: #F59E0B; }
+
+/* ─── Mobile Responsive ─────────────────────────────────── */
+
+/* ── Safe area for iPhone notch/home bar ─── */
+.bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (max-width: 768px) {
+  /* ── Global overflow prevention ── */
+  * { max-width: 100%; box-sizing: border-box; }
+  body { overflow-x: hidden; }
+
+  /* ── Sidebar → Bottom navigation bar ── */
+  .sidebar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: unset !important;
+    width: 100% !important;
+    height: 64px !important;
+    flex-direction: row !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    border-top: 1px solid #2A2A2C !important;
+    border-right: none !important;
+    z-index: 100 !important;
+    padding: 0 8px !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+  .sidebar-label { display: none !important; }
+  .sidebar-item {
+    flex-direction: column !important;
+    gap: 4px !important;
+    font-size: 10px !important;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Main content area ── */
+  .main-content {
+    margin-left: 0 !important;
+    padding-bottom: 72px !important;
+  }
+  .top-bar {
+    padding: 12px 16px !important;
+    gap: 10px !important;
+  }
+  .top-bar-search {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  /* ── Typography scaling ── */
+  h1, .page-title   { font-size: 20px !important; }
+  h2, .section-title { font-size: 16px !important; }
+  h3, .card-title    { font-size: 14px !important; }
+
+  /* ── Card padding ── */
+  .pack-card,
+  .briefing-section,
+  .health-card { padding: 14px !important; }
+
+  /* ── Button/actions stacking ── */
+  .pack-actions,
+  .modal-actions { flex-direction: column !important; }
+
+  .btn-activate,
+  .btn-preview {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* ── Touch targets: 44×44px minimum ── */
+  button,
+  .sidebar-item,
+  .suggestion-chip,
+  .pack-tag,
+  .industry-filter-item {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Modals → full-screen slide-up ── */
+  .modal-overlay { align-items: flex-end !important; }
+
+  .activation-modal,
+  .prejoin-modal,
+  .preview-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    overflow-y: auto !important;
+    animation: slideUpMobile 300ms ease !important;
+  }
+
+  /* ── Meetings: CTA buttons stacked ── */
+  .meetings-cta-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+    padding: 0 16px !important;
+  }
+  .meetings-cta-row > button {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    padding: 14px 16px !important;
+    gap: 14px !important;
+    width: 100% !important;
+  }
+  .meetings-cta-divider { display: none !important; }
+  .calendar-tab-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    padding: 0 16px !important;
+  }
+  .calendar-date-nav {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    width: 100% !important;
+  }
+  .connect-banner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin: 0 16px 12px !important;
+  }
+  .connect-banner-text { font-size: 13px !important; }
+
+  /* ── InCall: video tiles stacked ── */
+  .video-tiles {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+  .video-tiles > div {
+    width: 100% !important;
+    height: 200px !important;
+    flex: none !important;
+  }
+  .control-bar {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .participants-panel-mobile {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 70vh !important;
+    border-radius: 16px 16px 0 0 !important;
+    z-index: 200 !important;
+    width: auto !important;
+  }
+
+  /* ── Workgraph ── */
+  .wg-filter-bar {
+    height: auto !important;
+    flex-wrap: wrap !important;
+    padding: 8px 12px !important;
+  }
+  .wg-filter-pills {
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+  }
+  .wg-main {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+  .wg-graph {
+    height: 360px !important;
+    width: 100% !important;
+    flex: none !important;
+  }
+  .wg-right-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-left: none !important;
+    border-top: 1px solid #2A2A2C !important;
+    height: auto !important;
+  }
+  .wg-right-panel-inner {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-height: 480px !important;
+    border-left: none !important;
+  }
+  .kpi-bar {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    height: auto !important;
+  }
+  .kpi-bar > div {
+    border-right: none !important;
+    border-bottom: 1px solid #2A2A2C !important;
+    padding: 12px 8px !important;
+  }
+
+  /* ── Daily Briefing ── */
+  .briefing-main {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+  .briefing-left {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--webex-border) !important;
+  }
+  .ai-chat-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-left: none !important;
+    min-height: 400px !important;
+  }
+  .ai-chat-input-row {
+    padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+  .greeting-header {
+    height: auto !important;
+    padding: 16px !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+  }
+  .greeting-header h1 {
+    font-size: 18px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* ── Workflows ── */
+  .workflows-layout {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+  .industry-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--webex-border) !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 8px 12px !important;
+    flex-shrink: 0 !important;
+    gap: 6px !important;
+  }
+  .industry-sidebar > * { flex-shrink: 0 !important; }
+  /* Hide section headers inside sidebar on mobile */
+  .industry-sidebar h4,
+  .industry-sidebar .industry-sidebar-section { display: none !important; }
+  /* Show coming soon as horizontal pills */
+  .industry-sidebar .industry-coming-soon { display: none !important; }
+  .pack-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .comparison-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .comparison-wrap .comparison-table {
+    min-width: 560px !important;
+  }
+  .workflows-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 16px !important;
+  }
+  .workflows-search {
+    width: 100% !important;
+  }
+  .workflows-search input {
+    width: 100% !important;
+  }
+}
+
+@keyframes slideUpMobile {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}

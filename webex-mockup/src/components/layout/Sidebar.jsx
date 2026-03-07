@@ -1,10 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MessageSquare, Video, Phone, Users, Settings,
   Grid3x3, ChevronRight, Network, Sun, Package
 } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+}
 
 const navItems = [
   { id: 'messaging',  icon: MessageSquare, label: 'Messaging' },
@@ -21,7 +31,60 @@ export default function Sidebar() {
   const { activeView, setActiveView } = useAppStore();
   const [expanded, setExpanded] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const isMobile = useIsMobile();
 
+  // ── Mobile: render as bottom navigation bar ──────────────────────────────
+  if (isMobile) {
+    // Curated set: the 5 most important views for mobile
+    const MOBILE_NAV_IDS = ['meetings', 'briefing', 'workgraph', 'workflows', 'messaging'];
+    const mobileNavItems = MOBILE_NAV_IDS.map(id => navItems.find(n => n.id === id)).filter(Boolean);
+    return (
+      <nav
+        className="sidebar"
+        style={{
+          display: 'flex',
+          background: 'var(--webex-navy)',
+        }}
+      >
+        {mobileNavItems.map(({ id, icon: Icon, label }) => {
+          const isActive = activeView === id;
+          return (
+            <button
+              key={id}
+              className="sidebar-item"
+              onClick={() => setActiveView(id)}
+              style={{
+                flex: 1,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: isActive ? 'var(--webex-blue)' : 'var(--webex-muted)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 3,
+                padding: '6px 0',
+                position: 'relative',
+              }}
+            >
+              {navItems.find(n => n.id === id)?.badge && (
+                <span style={{
+                  position: 'absolute', top: 6, right: '50%', marginRight: -16,
+                  width: 6, height: 6, borderRadius: '50%',
+                  background: '#00BCF0', display: 'block'
+                }} />
+              )}
+              <Icon size={20} />
+              <span style={{ fontSize: 10, fontWeight: 500 }}>{label}</span>
+            </button>
+          );
+        })}
+      </nav>
+    );
+  }
+
+  // ── Desktop: animated collapsible sidebar ────────────────────────────────
   return (
     <motion.div
       animate={{ width: expanded ? 220 : 64 }}

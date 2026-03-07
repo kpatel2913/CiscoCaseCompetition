@@ -105,7 +105,7 @@ function ReadinessGauge({ score = 84 }) {
 // ─────────────────────────────────────────────
 function GreetingHeader() {
   return (
-    <div style={{
+    <div className="greeting-header" style={{
       height: 100, flexShrink: 0,
       background: 'linear-gradient(135deg, rgba(255,184,48,0.02) 0%, rgba(7,216,124,0.02) 100%)',
       borderBottom: '1px solid var(--webex-border)',
@@ -913,7 +913,7 @@ function AIChatPanel() {
       </div>
 
       {/* Input */}
-      <div style={{
+      <div className="ai-chat-input-row" style={{
         padding: '8px 14px 12px', flexShrink: 0,
         display: 'flex', gap: 8, alignItems: 'center',
       }}>
@@ -976,12 +976,13 @@ export default function DailyBriefingView() {
       <GreetingHeader />
 
       {/* Main content */}
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      <div className="briefing-main" style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         {/* Left — Briefing Panel */}
-        <div style={{
+        <div className="briefing-left" style={{
           width: '60%', overflowY: 'auto', padding: '16px 20px',
           display: 'flex', flexDirection: 'column', gap: 0,
         }}>
+
           <BriefingPlayer
             elapsed={elapsed}
             setElapsed={setElapsed}

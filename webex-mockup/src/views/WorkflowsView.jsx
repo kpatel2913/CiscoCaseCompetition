@@ -281,7 +281,7 @@ export default function WorkflowsView() {
   return (
     <div className="flex flex-col h-full bg-black overflow-hidden">
       {/* Page Header */}
-      <header className="px-8 py-6 border-b border-[var(--webex-border)] bg-[#0D0D0D] flex justify-between items-center shrink-0">
+      <header className="workflows-header px-8 py-6 border-b border-[var(--webex-border)] bg-[#0D0D0D] flex justify-between items-center shrink-0">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">Workflow Packs</h1>
           <p className="text-sm text-gray-400">Industry-ready automation. No IT team required.</p>
@@ -302,7 +302,7 @@ export default function WorkflowsView() {
           </div>
         </div>
 
-        <div className="relative">
+        <div className="workflows-search relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
           <input 
             type="text"
@@ -314,9 +314,9 @@ export default function WorkflowsView() {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="workflows-layout flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
-        <aside className="w-[180px] border-r border-[var(--webex-border)] bg-[#0D0D0D] p-4 flex flex-col gap-6 shrink-0">
+        <aside className="industry-sidebar w-[180px] border-r border-[var(--webex-border)] bg-[#0D0D0D] p-4 flex flex-col gap-6 shrink-0">
           <div>
             <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">Industries</h4>
             <div className="flex flex-col gap-1">
@@ -369,7 +369,7 @@ export default function WorkflowsView() {
           <div className="max-w-5xl mx-auto">
             <AnimatePresence mode="popLayout">
               <motion.div 
-                className="grid grid-cols-2 gap-6 mb-12"
+                className="pack-grid grid grid-cols-2 gap-6 mb-12"
                 initial={false}
               >
                 {visiblePacks.map((pack) => (
@@ -391,7 +391,7 @@ export default function WorkflowsView() {
                 <p className="text-sm text-gray-400">See why mid-market enterprises choose Webex for speed and vertical depth.</p>
               </div>
 
-              <div className="comparison-container">
+              <div className="comparison-wrap comparison-container">
                 <table className="comparison-table">
                   <thead>
                     <tr>

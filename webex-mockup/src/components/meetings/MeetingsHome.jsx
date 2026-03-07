@@ -109,7 +109,7 @@ export default function MeetingsHome() {
       </div>
 
       {/* Three CTA buttons */}
-      <div className="flex px-8 gap-2 mt-5 mb-5">
+      <div className="meetings-cta-row flex px-8 gap-2 mt-5 mb-5">
         {/* Start a Webex meeting */}
         <button
           style={btnBase}
@@ -134,7 +134,7 @@ export default function MeetingsHome() {
         </button>
 
         {/* Divider */}
-        <div style={{ width: 1, background: WX_COLORS.border, margin: '16px 0' }} />
+        <div className="meetings-cta-divider" style={{ width: 1, background: WX_COLORS.border, margin: '16px 0' }} />
 
         {/* Join a meeting */}
         <button
@@ -154,7 +154,7 @@ export default function MeetingsHome() {
         </button>
 
         {/* Divider */}
-        <div style={{ width: 1, background: WX_COLORS.border, margin: '16px 0' }} />
+        <div className="meetings-cta-divider" style={{ width: 1, background: WX_COLORS.border, margin: '16px 0' }} />
 
         {/* Schedule a meeting */}
         <button
@@ -174,7 +174,7 @@ export default function MeetingsHome() {
       </div>
 
       {/* Tabs + date nav */}
-      <div className="flex items-center justify-between px-8 mb-3">
+      <div className="calendar-tab-row flex items-center justify-between px-8 mb-3">
         {/* Tabs */}
         <div
           className="flex items-center gap-1 rounded-full p-1"
@@ -197,7 +197,7 @@ export default function MeetingsHome() {
         </div>
 
         {/* Date navigation */}
-        <div className="flex items-center gap-2">
+        <div className="calendar-date-nav flex items-center gap-2">
           <button
             className="flex items-center justify-center rounded-full"
             style={{ width: 28, height: 28, background: WX_COLORS.surface, border: 'none', color: WX_COLORS.muted, cursor: 'pointer' }}
@@ -238,11 +238,11 @@ export default function MeetingsHome() {
             initial={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex items-center gap-3 mx-8 px-4 py-3 rounded-xl mb-4 overflow-hidden"
+            className="connect-banner flex items-center gap-3 mx-8 px-4 py-3 rounded-xl mb-4 overflow-hidden"
             style={{ background: 'rgba(0, 188, 240, 0.08)', border: `1px solid rgba(0,188,240,0.2)` }}
           >
             <Info size={16} style={{ color: WX_COLORS.cyan, flexShrink: 0 }} />
-            <span className="flex-1 text-sm" style={{ color: WX_COLORS.cyan }}>
+            <span className="connect-banner-text flex-1 text-sm" style={{ color: WX_COLORS.cyan }}>
               Connect your calendar to see all your meetings right here.
             </span>
             <button
