@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Play, Pause, ChevronDown, ChevronUp, Send, Bot,
+  Play, Pause, ChevronDown, ChevronUp, Send, Bot, X,
   CheckCircle, AlertCircle, Info
 } from 'lucide-react';
 import {
@@ -772,7 +772,7 @@ const INITIAL_MESSAGES = [
 
 
 
-function AIChatPanel() {
+function AIChatPanel({ onClose }) {
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [isTyping, setIsTyping] = useState(false);
   const [input, setInput] = useState('');
@@ -813,8 +813,9 @@ function AIChatPanel() {
 
   return (
     <div style={{
-      width: '40%', minWidth: 280, display: 'flex', flexDirection: 'column',
-      background: 'var(--br-ai-bg)', borderLeft: '1px solid var(--webex-border)', overflow: 'hidden',
+      display: 'flex', flexDirection: 'column', height: '100%',
+      background: 'var(--br-ai-bg)', overflow: 'hidden',
+      borderRadius: 'inherit',
     }}>
       {/* Header */}
       <div style={{
@@ -831,7 +832,12 @@ function AIChatPanel() {
           </div>
           <span style={{ fontWeight: 700, fontSize: 14, color: '#E8F4F8' }}>Webex AI</span>
         </div>
-        <span style={{ fontSize: 11, color: '#5E5E63' }}>···</span>
+        <button
+          onClick={onClose}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#8E8E93', display: 'flex', padding: 4 }}
+        >
+          <X size={16} />
+        </button>
       </div>
 
       {/* Differentiator card */}
@@ -955,6 +961,7 @@ export default function DailyBriefingView() {
   const [activeSection, setActiveSection] = useState(null);
   const [elapsed, setElapsed] = useState(0);
   const [toast, setToast] = useState({ visible: false, message: '' });
+  const [chatOpen, setChatOpen] = useState(false);
 
   const showToast = useCallback((msg) => {
     setToast({ visible: true, message: msg });
@@ -975,14 +982,12 @@ export default function DailyBriefingView() {
     >
       <GreetingHeader />
 
-      {/* Main content */}
+      {/* Main content — full width now that chat is a drawer */}
       <div className="briefing-main" style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        {/* Left — Briefing Panel */}
         <div className="briefing-left" style={{
-          width: '60%', overflowY: 'auto', padding: '16px 20px',
+          width: '100%', overflowY: 'auto', padding: '16px 20px',
           display: 'flex', flexDirection: 'column', gap: 0,
         }}>
-
           <BriefingPlayer
             elapsed={elapsed}
             setElapsed={setElapsed}
@@ -1011,10 +1016,32 @@ export default function DailyBriefingView() {
 
           <SourceMeetings />
         </div>
-
-        {/* Right — AI Chat Panel */}
-        <AIChatPanel />
       </div>
+
+      {/* Floating AI Chat FAB */}
+      <button
+        className="ai-chat-fab"
+        onClick={() => setChatOpen(o => !o)}
+        aria-label="Open Webex AI chat"
+      >
+        <Bot size={22} color="#000" />
+        {!chatOpen && <span className="ai-chat-fab-label">Webex AI</span>}
+      </button>
+
+      {/* Floating AI Chat Drawer */}
+      <AnimatePresence>
+        {chatOpen && (
+          <motion.div
+            className="ai-chat-drawer"
+            initial={{ opacity: 0, y: 40, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 40, scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+          >
+            <AIChatPanel onClose={() => setChatOpen(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Toast */}
       <AnimatePresence>

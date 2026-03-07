@@ -85,9 +85,9 @@ function LinkTooltip({ tooltip }) {
 function GraphLegend() {
   return (
     <div style={{
-      position: 'absolute', bottom: 16, left: 16,
-      background: 'rgba(0,0,0,0.9)', border: '1px solid var(--webex-border)',
-      borderRadius: 10, padding: '10px 14px', zIndex: 5, backdropFilter: 'blur(8px)'
+      position: 'absolute', bottom: 16, right: 16,
+      background: 'rgba(0,0,0,0.85)', border: '1px solid var(--webex-border)',
+      borderRadius: 10, padding: '8px 12px', zIndex: 5, backdropFilter: 'blur(8px)'
     }}>
       <div style={{ fontSize: 11, color: '#8E8E93', fontWeight: 600, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Legend</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
@@ -952,11 +952,11 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
 
   return (
     <div className="wg-filter-bar" style={{
-      height: 52, background: '#141416', borderBottom: '1px solid #2A2A2C',
+      minHeight: 52, background: '#141416', borderBottom: '1px solid #2A2A2C',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '0 20px', flexShrink: 0, gap: 12,
+      padding: '8px 20px', flexShrink: 0, gap: 12, flexWrap: 'wrap',
     }}>
-      <div className="wg-filter-pills" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+      <div className="wg-filter-pills" style={{ display: 'flex', alignItems: 'center', gap: 8, overflowX: 'auto', flexWrap: 'nowrap', paddingBottom: 2 }}>
         {DEPT_LIST.map(dept =>
           pill(dept, deptFilter === dept, () => setDeptFilter(dept),
             dept !== 'All' ? DEPT_COLORS[dept] : null)
@@ -992,13 +992,14 @@ function RoleGateBanner() {
   return (
     <div style={{
       background: 'rgba(7,216,124,0.07)', borderBottom: '1px solid rgba(7,216,124,0.2)',
-      padding: '7px 20px', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0,
+      padding: '7px 20px', display: 'flex', alignItems: 'center', gap: 8,
+      flexShrink: 0, flexWrap: 'wrap',
     }}>
-      <Zap size={13} style={{ color: '#07D87C' }} />
-      <span style={{ fontSize: 12, color: '#07D87C', fontWeight: 600 }}>
+      <Zap size={13} style={{ color: '#07D87C', flexShrink: 0 }} />
+      <span style={{ fontSize: 12, color: '#07D87C', fontWeight: 600, flexShrink: 0 }}>
         Viewing as: Team Lead — Kris Patel
       </span>
-      <span style={{ fontSize: 11, color: '#8E8E93', marginLeft: 8 }}>
+      <span style={{ fontSize: 11, color: '#8E8E93' }}>
         Workgraph is only visible to Team Leads and Executives
       </span>
     </div>
