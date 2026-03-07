@@ -1168,7 +1168,7 @@ export default function WorkgraphView() {
             <motion.div
               key="kpibar"
               initial={{ maxHeight: 0, opacity: 0 }}
-              animate={{ maxHeight: 200, opacity: 1 }}
+              animate={{ maxHeight: 400, opacity: 1 }}
               exit={{ maxHeight: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               style={{ overflow: 'hidden' }}

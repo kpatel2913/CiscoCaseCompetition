@@ -245,6 +245,8 @@ function WorkflowPackCard({ pack, isActive, onActivate, onPreview }) {
   );
 }
 
+import LiveWorkflowDashboard from './LiveWorkflowDashboard';
+
 // ── Main View ──────────────────────────────────────────────────────────────
 
 export default function WorkflowsView() {
@@ -255,6 +257,7 @@ export default function WorkflowsView() {
   const [previewTarget, setPreview] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
+  const [showLiveDashboard, setShowLiveDashboard] = useState(false);
 
   const visiblePacks = WORKFLOW_PACKS.filter(pack => {
     const matchesIndustry = selectedIndustry === 'all' || pack.industry === selectedIndustry;
@@ -276,7 +279,14 @@ export default function WorkflowsView() {
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
     }
+    if (pack.id === 'hc-care-coordination') {
+      setShowLiveDashboard(true);
+    }
   };
+
+  if (showLiveDashboard) {
+    return <LiveWorkflowDashboard isActivated={true} onBack={() => setShowLiveDashboard(false)} />;
+  }
 
   return (
     <div className="flex flex-col h-full bg-black overflow-hidden">
