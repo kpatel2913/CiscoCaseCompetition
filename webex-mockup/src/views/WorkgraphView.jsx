@@ -135,10 +135,13 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
   useEffect(() => {
     const el = svgRef.current;
     if (!el) return;
-    const width = el.clientWidth || 600;
-    const height = el.clientHeight || 500;
+
     const svg = d3.select(el);
     svg.selectAll('*').remove();
+
+    // Initial measurement
+    let { width, height } = el.getBoundingClientRect();
+    if (!width || !height) { width = 800; height = 600; }
 
     // Deep-clone node data so D3 mutations don't corrupt source
     const nodesData = graphNodes.map(n => ({ ...n }));
@@ -170,6 +173,18 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
       .force('collision', d3.forceCollide(32));
 
     simRef.current = simulation;
+
+    // Resize handling to keep simulation centered
+    const ro = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const { width: nw, height: nh } = entry.contentRect;
+        if (nw && nh) {
+          simulation.force('center', d3.forceCenter(nw / 2, nh / 2));
+          simulation.alpha(0.3).restart();
+        }
+      }
+    });
+    ro.observe(el);
 
     // Defs
     const defs = svg.append('defs');
@@ -255,7 +270,10 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
       node.attr('transform', d => `translate(${d.x},${d.y})`);
     });
 
-    return () => simulation.stop();
+    return () => {
+      simulation.stop();
+      ro.disconnect();
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -299,7 +317,7 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
       <svg
         ref={svgRef}
         className="workgraph-svg"
-        style={{ touchAction: 'none', cursor: 'grab' }}
+        style={{ width: '100%', height: '100%', display: 'block', touchAction: 'none', cursor: 'grab' }}
         onClick={() => onNodeClick(null)}
       />
       {/* Reset zoom button */}
@@ -307,7 +325,7 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
         onClick={resetZoom}
         title="Reset zoom"
         style={{
-          position: 'absolute', bottom: 60, right: 16, zIndex: 10,
+          position: 'absolute', bottom: 16, right: 16, zIndex: 10,
           background: 'rgba(0,0,0,0.7)', border: '1px solid #3A3A3C',
           borderRadius: 8, color: '#8E8E93', fontSize: 11, padding: '5px 10px',
           cursor: 'pointer', backdropFilter: 'blur(8px)',
@@ -937,12 +955,10 @@ function RightPanel({ onShowToast }) {
 
   return (
     <div className="wg-right-panel-inner" style={{
-      width: '35%', minWidth: 300, background: 'var(--wg-panel-bg)',
-      borderLeft: '1px solid #2A2A2C', display: 'flex', flexDirection: 'column',
-      overflow: 'hidden',
+      width: '100%', display: 'flex', flexDirection: 'column',
+      flex: 1, overflow: 'hidden',
     }}>
-      <div style={{ padding: '12px 16px 0', flexShrink: 0 }}>
-        <PrivacyBanner />
+      <div style={{ padding: '4px 16px 0', flexShrink: 0 }}>
         {/* Tabs */}
         <div style={{
           display: 'flex', gap: 2, background: '#141416',
@@ -1015,21 +1031,6 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
           pill(t, timeRange === t, () => setTimeRange(t), null)
         )}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-        <span style={{
-          fontSize: 11, color: '#8E8E93', background: '#252528',
-          border: '1px solid #3A3A3C', borderRadius: 20, padding: '3px 10px'
-        }}>
-          👤 Team Lead View
-        </span>
-        <button style={{
-          fontSize: 12, fontWeight: 600, color: '#00BCF0',
-          background: 'transparent', border: '1px solid #00BCF0',
-          borderRadius: 20, padding: '4px 14px', cursor: 'pointer'
-        }}>
-          Export
-        </button>
-      </div>
     </div>
   );
 }
@@ -1064,6 +1065,7 @@ export default function WorkgraphView() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [toast, setToast] = useState({ visible: false, message: '' });
   const [statsOpen, setStatsOpen] = useState(false);
+  const [mobileTab, setMobileTab] = useState('map');
 
   const showToast = useCallback((msg) => {
     setToast({ visible: true, message: msg });
@@ -1080,21 +1082,28 @@ export default function WorkgraphView() {
         background: 'var(--wg-bg)', overflow: 'hidden',
       }}
     >
-      <RoleGateBanner />
-      <TopFilterBar
-        deptFilter={deptFilter} setDeptFilter={setDeptFilter}
-        timeRange={timeRange} setTimeRange={setTimeRange}
-      />
+      <div className="wg-mobile-tabs" style={{ display: 'none', padding: '10px 20px', background: '#141416', borderBottom: '1px solid #2A2A2C', flexShrink: 0 }}>
+        <div style={{ display: 'flex', background: '#0D0D0D', borderRadius: 8, padding: 3, border: '1px solid #2A2A2C' }}>
+          <button onClick={() => setMobileTab('map')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 12, fontWeight: 600, background: mobileTab === 'map' ? '#252528' : 'transparent', color: mobileTab === 'map' ? '#E8F4F8' : '#8E8E93', border: 'none' }}>Workgraph Map</button>
+          <button onClick={() => setMobileTab('insights')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 12, fontWeight: 600, background: mobileTab === 'insights' ? '#252528' : 'transparent', color: mobileTab === 'insights' ? '#E8F4F8' : '#8E8E93', border: 'none' }}>Insights & Risks</button>
+        </div>
+      </div>
 
       {/* Main split area */}
-      <div className="wg-main" style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        {/* Graph Panel — 65% */}
-        <div className="wg-graph" style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
-          <GraphPanel
-            deptFilter={deptFilter}
-            onNodeClick={setSelectedNode}
-            selectedNodeId={selectedNode?.id}
+      <div className="wg-main" data-mobile-tab={mobileTab} style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        {/* Graph Panel — 65% on desktop */}
+        <div className="wg-graph" style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <TopFilterBar
+            deptFilter={deptFilter} setDeptFilter={setDeptFilter}
+            timeRange={timeRange} setTimeRange={setTimeRange}
           />
+          <div style={{ flex: 1, position: 'relative' }}>
+            <GraphPanel
+              deptFilter={deptFilter}
+              onNodeClick={setSelectedNode}
+              selectedNodeId={selectedNode?.id}
+            />
+          </div>
           {/* Selected node info strip */}
           <AnimatePresence>
             {selectedNode && (
@@ -1133,8 +1142,8 @@ export default function WorkgraphView() {
           </AnimatePresence>
         </div>
 
-        {/* Right Panel — 35% */}
-        <div className="wg-right-panel">
+        {/* Right Panel — 35% on desktop */}
+        <div className="wg-right-panel" style={{ width: '35%', minWidth: 320, display: 'flex', flexDirection: 'column', borderLeft: '1px solid #2A2A2C', background: 'var(--wg-panel-bg)' }}>
           <RightPanel onShowToast={showToast} />
         </div>
       </div>

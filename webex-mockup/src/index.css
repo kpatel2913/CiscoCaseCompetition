@@ -868,22 +868,33 @@ input[type="range"].progress-slider::-webkit-slider-thumb {
     overflow-y: auto !important;
     overflow-x: hidden !important;
   }
-  .wg-graph {
-    height: 360px !important;
-    width: 100% !important;
-    flex: none !important;
+  .wg-mobile-tabs {
+    display: block !important;
   }
-  .wg-right-panel {
+  .wg-main[data-mobile-tab="map"] .wg-right-panel {
+    display: none !important;
+  }
+  .wg-main[data-mobile-tab="map"] .wg-graph {
+    display: block !important;
+    height: 100% !important;
     width: 100% !important;
-    min-width: 0 !important;
+    flex: 1 !important;
+  }
+  .wg-main[data-mobile-tab="insights"] .wg-graph {
+    display: none !important;
+  }
+  .wg-main[data-mobile-tab="insights"] .wg-right-panel {
+    display: flex !important;
+    width: 100% !important;
+    height: 100% !important;
+    flex: 1 !important;
     border-left: none !important;
-    border-top: 1px solid #2A2A2C !important;
-    height: auto !important;
+    border-top: none !important;
   }
-  .wg-right-panel-inner {
+  .wg-main[data-mobile-tab="insights"] .wg-right-panel-inner {
     width: 100% !important;
     min-width: 0 !important;
-    max-height: 480px !important;
+    max-height: none !important;
     border-left: none !important;
   }
   .kpi-bar {
