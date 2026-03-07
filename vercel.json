@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd webex-mockup && npm install && npm run build",
+  "outputDirectory": "webex-mockup/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
