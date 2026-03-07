@@ -332,9 +332,9 @@ export default function WorkflowsView() {
                 >
                   <span className="flex items-center gap-2">
                     <span>{ind.icon}</span>
-                    {ind.label}
+                    <span>{ind.label}</span>
+                    <span className="text-[10px] text-gray-500 font-semibold opacity-70 ml-1">{ind.count}</span>
                   </span>
-                  <span className="text-xs text-gray-400 font-medium">{ind.count}</span>
                 </button>
               ))}
             </div>

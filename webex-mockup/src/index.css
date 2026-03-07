@@ -875,7 +875,8 @@ input[type="range"].progress-slider::-webkit-slider-thumb {
     display: none !important;
   }
   .wg-main[data-mobile-tab="map"] .wg-graph {
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
     height: 100% !important;
     width: 100% !important;
     flex: 1 !important;

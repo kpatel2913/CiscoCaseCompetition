@@ -313,7 +313,7 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
   }, [selectedNodeId]);
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%', minHeight: 0, flex: 1 }}>
       <svg
         ref={svgRef}
         className="workgraph-svg"
@@ -875,6 +875,8 @@ const KPI_ITEMS = [
   { label: 'Teams at exhaustion risk',      value: 3,    trend: '+2',    up: true,  good: false },
   { label: 'Alignment score',              value: 71,   trend: '−3pts', up: false, good: false },
   { label: 'Active communication gaps',    value: 3,    trend: '+1',    up: true,  good: false },
+  { label: 'Context switching index',       value: 4.8,  trend: '+0.5',  up: true,  good: false, isFloat: true },
+  { label: 'Productivity recovery (hrs)',   value: 12.5, trend: '+2.1h', up: true,  good: true,  isFloat: true },
   { label: 'Avg response time (hrs)',       value: 2.4,  trend: '−0.6h', up: false, good: true,  isFloat: true },
   { label: 'Avg meeting hrs / day',         value: 8.7,  trend: '+1.2h', up: true,  good: false, isFloat: true },
 ];
@@ -1002,13 +1004,13 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
       key={label}
       onClick={onClick}
       style={{
-        padding: '5px 14px', borderRadius: 20, fontSize: 12, fontWeight: 500,
+        padding: '6px 18px', borderRadius: 20, fontSize: 13, fontWeight: 500,
         border: `1px solid ${active ? (color || '#00BCF0') : '#3A3A3C'}`,
         background: active ? (color ? color + '22' : 'rgba(0,188,240,0.12)') : 'transparent',
-        color: active ? (color || '#00BCF0') : '#8E8E93',
+        color: active ? (color || '#00BCF0') : '#E8F4F8',
         cursor: 'pointer', transition: 'all 0.15s',
         whiteSpace: 'nowrap', flexShrink: 0,
-        minWidth: 'max-content',
+        minWidth: 90, textAlign: 'center'
       }}
     >
       {label}
@@ -1021,12 +1023,12 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '8px 20px', flexShrink: 0, gap: 12, flexWrap: 'wrap',
     }}>
-      <div className="wg-filter-pills" style={{ display: 'flex', alignItems: 'center', gap: 8, overflowX: 'auto', flexWrap: 'nowrap', paddingBottom: 2 }}>
+      <div className="wg-filter-pills" style={{ display: 'flex', alignItems: 'center', gap: 10, overflowX: 'auto', flexWrap: 'nowrap', paddingBottom: 2, paddingLeft: 10 }}>
         {DEPT_LIST.map(dept =>
           pill(dept, deptFilter === dept, () => setDeptFilter(dept),
             dept !== 'All' ? DEPT_COLORS[dept] : null)
         )}
-        <div style={{ width: 1, height: 20, background: '#3A3A3C', margin: '0 4px' }} />
+        <div style={{ width: 1, height: 20, background: '#3A3A3C', margin: '0 8px' }} />
         {TIME_RANGES.map(t =>
           pill(t, timeRange === t, () => setTimeRange(t), null)
         )}
@@ -1035,26 +1037,7 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
   );
 }
 
-// ─────────────────────────────────────────────
-//  Role Gate Banner
-// ─────────────────────────────────────────────
-function RoleGateBanner() {
-  return (
-    <div style={{
-      background: 'rgba(7,216,124,0.07)', borderBottom: '1px solid rgba(7,216,124,0.2)',
-      padding: '7px 20px', display: 'flex', alignItems: 'center', gap: 8,
-      flexShrink: 0, flexWrap: 'wrap',
-    }}>
-      <Zap size={13} style={{ color: '#07D87C', flexShrink: 0 }} />
-      <span style={{ fontSize: 12, color: '#07D87C', fontWeight: 600, flexShrink: 0 }}>
-        Viewing as: Team Lead — Kris Patel
-      </span>
-      <span style={{ fontSize: 11, color: '#8E8E93' }}>
-        Workgraph is only visible to Team Leads and Executives
-      </span>
-    </div>
-  );
-}
+// Unused legacy banners removed.
 
 // ─────────────────────────────────────────────
 //  Root View
@@ -1090,14 +1073,18 @@ export default function WorkgraphView() {
       </div>
 
       {/* Main split area */}
-      <div className="wg-main" data-mobile-tab={mobileTab} style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      <div className="wg-main" data-mobile-tab={mobileTab} style={{ display: 'flex', flex: 1, overflow: 'hidden', minHeight: 0 }}>
         {/* Graph Panel — 65% on desktop */}
-        <div className="wg-graph" style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <div className="wg-graph" style={{
+          flex: 1, position: 'relative', overflow: 'hidden',
+          display: mobileTab === 'map' ? 'flex' : 'none', flexDirection: 'column',
+          minHeight: 0
+        }}>
           <TopFilterBar
             deptFilter={deptFilter} setDeptFilter={setDeptFilter}
             timeRange={timeRange} setTimeRange={setTimeRange}
           />
-          <div style={{ flex: 1, position: 'relative' }}>
+          <div style={{ flex: 1, position: 'relative', minHeight: 0, overflow: 'hidden' }}>
             <GraphPanel
               deptFilter={deptFilter}
               onNodeClick={setSelectedNode}
@@ -1143,7 +1130,12 @@ export default function WorkgraphView() {
         </div>
 
         {/* Right Panel — 35% on desktop */}
-        <div className="wg-right-panel" style={{ width: '35%', minWidth: 320, display: 'flex', flexDirection: 'column', borderLeft: '1px solid #2A2A2C', background: 'var(--wg-panel-bg)' }}>
+        <div className="wg-right-panel" style={{
+          width: '35%', minWidth: 320,
+          display: mobileTab === 'insights' || window.innerWidth > 768 ? 'flex' : 'none',
+          flexDirection: 'column', borderLeft: '1px solid #2A2A2C',
+          background: 'var(--wg-panel-bg)'
+        }}>
           <RightPanel onShowToast={showToast} />
         </div>
       </div>
