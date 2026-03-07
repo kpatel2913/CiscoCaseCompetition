@@ -714,6 +714,31 @@ function useTypewriter(text, enabled, speed = 18) {
 // ─────────────────────────────────────────────
 const AI_RECS = [
   {
+    id: 'rec-henderson',
+    priority: 'HIGH',
+    priorityColor: '#FF6B6B',
+    priorityBg: 'rgba(255,107,107,0.15)',
+    title: 'Henderson Project — Deadline Miss Root Cause Identified',
+    team1: 'Engineering',
+    team2: 'Design',
+    gapDays: 11,
+    body: `Engineering and Design teams had zero cross-functional communication for 11 consecutive days leading up to the Henderson project deadline. During this period, 0 shared messages, 0 joint meetings, and 0 collaborative documents were logged between the two teams. This communication blackout is the direct cause of the missed deadline — decisions made in isolation on both sides created conflicting deliverables that weren't discovered until it was too late.`,
+    metrics: [
+      { label: 'Days of zero communication', value: '11', trend: 'critical' },
+      { label: 'Cross-team messages in that period', value: '0', trend: 'critical' },
+      { label: 'Shared meetings held', value: '0', trend: 'critical' },
+      { label: 'Days before deadline gap was detectable', value: '8', trend: 'warn' },
+    ],
+    exhaustionFlags: [
+      { team: 'Engineering', signal: 'Avg 13.4 meeting hours/day — 2 weeks sustained', severity: 'high' },
+      { team: 'Design', signal: 'Response time to messages up 340% in final week', severity: 'high' },
+      { team: 'Design', signal: 'After-hours activity spiked 5 days before deadline', severity: 'medium' },
+    ],
+    recommendation: 'Establish a mandatory weekly cross-functional sync between Engineering and Design leads for all active projects with deadlines within 30 days. Workgraph can auto-flag any project where cross-team communication drops below threshold for 3+ consecutive days.',
+    impact: 'Had this communication gap been flagged at Day 3, the deadline would have been recoverable. At Day 8 it became critical. At Day 11 it was too late.',
+    applyTarget: 'Engineering & Design Leads',
+  },
+  {
     id: 'rec-1',
     priority: 'HIGH',
     priorityColor: '#FF6B6B',
@@ -833,6 +858,85 @@ function AIRecCard({ rec, index, isActive, onApply, appliedIds }) {
 // ─────────────────────────────────────────────
 //  Tab 3: AI Recommendations
 // ─────────────────────────────────────────────
+function HendersonRecommendationCard({ rec, onApply, onDismiss }) {
+  return (
+    <div className="recommendation-card recommendation-card--high recommendation-card--featured">
+
+      {/* Priority + title */}
+      <div className="rec-header">
+        <span className="rec-priority rec-priority--high">⚠ HIGH RISK</span>
+        <span className="rec-tag">Root Cause Analysis</span>
+      </div>
+      <h3 className="rec-title">{rec.title}</h3>
+      <p className="rec-body">{rec.body}</p>
+
+      {/* 4 metric tiles */}
+      <div className="rec-metrics-grid">
+        {rec.metrics.map((m, i) => (
+          <div key={i} className={`rec-metric rec-metric--${m.trend}`}>
+            <span className="rec-metric-value">{m.value}</span>
+            <span className="rec-metric-label">{m.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Communication timeline — the visual "proof" */}
+      <div className="rec-timeline">
+        <div className="rec-timeline-header">Communication timeline — 14 days before deadline</div>
+        <div className="rec-timeline-bars">
+          {[0,0,0,0,0,0,0,0,0,0,0,2,1,0].map((val, i) => (
+            <div key={i} className="rec-timeline-col">
+              <div
+                className={`rec-timeline-bar ${val === 0 ? 'rec-timeline-bar--zero' : ''}`}
+                style={{ height: `${Math.max(val * 20, 4)}px` }}
+                title={val === 0 ? 'No communication' : `${val} interactions`}
+              />
+              <span className="rec-timeline-day">-{14 - i}</span>
+            </div>
+          ))}
+        </div>
+        <div className="rec-timeline-legend">
+          <span className="legend-zero">■ Zero communication</span>
+          <span className="legend-deadline">↑ Deadline</span>
+        </div>
+      </div>
+
+      {/* Digital exhaustion flags */}
+      <div className="rec-exhaustion">
+        <div className="rec-exhaustion-header">🔥 Digital Exhaustion Signals Detected</div>
+        {rec.exhaustionFlags.map((flag, i) => (
+          <div key={i} className={`rec-exhaustion-row rec-exhaustion-row--${flag.severity}`}>
+            <span className="exhaustion-team">{flag.team}</span>
+            <span className="exhaustion-signal">{flag.signal}</span>
+            <span className={`exhaustion-badge exhaustion-badge--${flag.severity}`}>
+              {flag.severity.toUpperCase()}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Impact callout */}
+      <div className="rec-impact-callout">
+        <span className="impact-icon">💡</span>
+        <p>{rec.impact}</p>
+      </div>
+
+      {/* Recommendation */}
+      <div className="rec-suggestion">
+        <strong>Recommended action:</strong> {rec.recommendation}
+      </div>
+
+      {/* Actions */}
+      <div className="rec-actions">
+        <button className="btn-apply-rec" onClick={() => onApply?.(rec)}>Apply suggestion</button>
+        <button className="btn-share-rec">Share with board →</button>
+        <button className="btn-dismiss-rec" onClick={() => onDismiss?.(rec)}>Dismiss</button>
+      </div>
+
+    </div>
+  );
+}
+
 function AIRecsTab({ isActive, onShowToast }) {
   const [appliedIds, setAppliedIds] = useState([]);
 
@@ -843,16 +947,28 @@ function AIRecsTab({ isActive, onShowToast }) {
 
   return (
     <div style={{ overflowY: 'auto', height: '100%', paddingRight: 2 }}>
-      {AI_RECS.map((rec, i) => (
-        <AIRecCard
-          key={rec.id}
-          rec={rec}
-          index={i}
-          isActive={isActive}
-          onApply={handleApply}
-          appliedIds={appliedIds}
-        />
-      ))}
+      {AI_RECS.map((rec, i) => {
+        if (rec.id === 'rec-henderson') {
+          return !appliedIds.includes(rec.id) ? (
+            <HendersonRecommendationCard 
+              key={rec.id} 
+              rec={rec} 
+              onApply={handleApply} 
+              onDismiss={handleApply} 
+            />
+          ) : null;
+        }
+        return (
+          <AIRecCard
+            key={rec.id}
+            rec={rec}
+            index={i}
+            isActive={isActive}
+            onApply={handleApply}
+            appliedIds={appliedIds}
+          />
+        );
+      })}
       {appliedIds.length === AI_RECS.length && (
         <div style={{ textAlign: 'center', padding: '24px 0', color: '#8E8E93', fontSize: 13 }}>
           ✅ All suggestions addressed
