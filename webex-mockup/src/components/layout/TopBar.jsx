@@ -153,8 +153,8 @@ export default function TopBar() {
             onMouseLeave={e => { if(!profileOpen) e.currentTarget.style.background = 'transparent'; }}
           >
             <Avatar userId="me" size={28} showPresence={false} />
-            <span className="text-sm font-medium" style={{ color: 'var(--webex-text)' }}>Alex Morgan</span>
-            <ChevronDown size={13} style={{ color: 'var(--webex-muted)' }} />
+            <span className="topbar-name text-sm font-medium" style={{ color: 'var(--webex-text)' }}>Alex Morgan</span>
+            <ChevronDown className="topbar-chevron" size={13} style={{ color: 'var(--webex-muted)' }} />
           </button>
 
           <AnimatePresence>

@@ -117,11 +117,20 @@ function GraphLegend() {
 // ─────────────────────────────────────────────
 function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
   const svgRef = useRef(null);
+  const containerRef = useRef(null);
   const [tooltip, setTooltip] = useState(null);
   const [linkTooltip, setLinkTooltip] = useState(null);
   const simRef = useRef(null);
   const nodesRef = useRef(null);
   const linksRef = useRef(null);
+  const zoomRef = useRef(null);
+
+  const resetZoom = useCallback(() => {
+    if (!svgRef.current || !zoomRef.current) return;
+    d3.select(svgRef.current)
+      .transition().duration(400)
+      .call(zoomRef.current.transform, d3.zoomIdentity);
+  }, []);
 
   useEffect(() => {
     const el = svgRef.current;
@@ -134,6 +143,25 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
     // Deep-clone node data so D3 mutations don't corrupt source
     const nodesData = graphNodes.map(n => ({ ...n }));
     const linksData = graphLinks.map(l => ({ ...l }));
+
+    // ── Pan & Zoom ──────────────────────────────────────────
+    // All graph elements live inside this group so zoom transforms it
+    const rootG = svg.append('g').attr('class', 'zoom-root');
+
+    const zoomBehavior = d3.zoom()
+      .scaleExtent([0.4, 3])                    // min zoom 40% → max 300%
+      .translateExtent([                         // pan boundaries: 1.5× canvas
+        [-width * 0.5, -height * 0.5],
+        [width * 1.5, height * 1.5]
+      ])
+      .on('zoom', (event) => {
+        rootG.attr('transform', event.transform);
+      });
+
+    svg.call(zoomBehavior)
+       .on('dblclick.zoom', null);              // disable dblclick zoom
+
+    zoomRef.current = zoomBehavior;
 
     const simulation = d3.forceSimulation(nodesData)
       .force('link', d3.forceLink(linksData).id(d => d.id).distance(d => 130 - d.strength * 60).strength(d => d.strength * 0.5))
@@ -151,8 +179,8 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
     feMerge.append('feMergeNode').attr('in', 'coloredBlur');
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
 
-    // Links
-    const link = svg.append('g').selectAll('line')
+    // Links (inside rootG — affected by zoom/pan)
+    const link = rootG.append('g').selectAll('line')
       .data(linksData)
       .join('line')
         .attr('stroke', d => d.gap ? '#FF6B6B' : 'var(--webex-border)')
@@ -166,8 +194,8 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
 
     linksRef.current = link;
 
-    // Node groups
-    const node = svg.append('g').selectAll('g')
+    // Node groups (inside rootG)
+    const node = rootG.append('g').selectAll('g')
       .data(nodesData)
       .join('g')
         .attr('cursor', 'pointer')
@@ -267,12 +295,26 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
   }, [selectedNodeId]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
       <svg
         ref={svgRef}
         className="workgraph-svg"
+        style={{ touchAction: 'none', cursor: 'grab' }}
         onClick={() => onNodeClick(null)}
       />
+      {/* Reset zoom button */}
+      <button
+        onClick={resetZoom}
+        title="Reset zoom"
+        style={{
+          position: 'absolute', bottom: 60, right: 16, zIndex: 10,
+          background: 'rgba(0,0,0,0.7)', border: '1px solid #3A3A3C',
+          borderRadius: 8, color: '#8E8E93', fontSize: 11, padding: '5px 10px',
+          cursor: 'pointer', backdropFilter: 'blur(8px)',
+        }}
+      >
+        ⟳ Reset
+      </button>
       <GraphLegend />
       {tooltip && <GraphTooltip tooltip={tooltip} />}
       {linkTooltip && <LinkTooltip tooltip={linkTooltip} />}
@@ -939,11 +981,13 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
       key={label}
       onClick={onClick}
       style={{
-        padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 500,
+        padding: '5px 14px', borderRadius: 20, fontSize: 12, fontWeight: 500,
         border: `1px solid ${active ? (color || '#00BCF0') : '#3A3A3C'}`,
         background: active ? (color ? color + '22' : 'rgba(0,188,240,0.12)') : 'transparent',
         color: active ? (color || '#00BCF0') : '#8E8E93',
         cursor: 'pointer', transition: 'all 0.15s',
+        whiteSpace: 'nowrap', flexShrink: 0,
+        minWidth: 'max-content',
       }}
     >
       {label}
@@ -1014,6 +1058,7 @@ export default function WorkgraphView() {
   const [timeRange, setTimeRange] = useState('This Month');
   const [selectedNode, setSelectedNode] = useState(null);
   const [toast, setToast] = useState({ visible: false, message: '' });
+  const [statsOpen, setStatsOpen] = useState(false);
 
   const showToast = useCallback((msg) => {
     setToast({ visible: true, message: msg });
@@ -1089,7 +1134,44 @@ export default function WorkgraphView() {
         </div>
       </div>
 
-      <KPIBar />
+      {/* Collapsible stats panel */}
+      <div style={{ flexShrink: 0 }}>
+        {/* Arrow toggle */}
+        <button
+          onClick={() => setStatsOpen(o => !o)}
+          style={{
+            width: '100%', height: 28, display: 'flex', alignItems: 'center',
+            justifyContent: 'center', gap: 6,
+            background: '#141416', borderTop: '1px solid #2A2A2C',
+            border: 'none', cursor: 'pointer', color: '#8E8E93',
+            fontSize: 11, fontWeight: 600, letterSpacing: '0.05em',
+          }}
+        >
+          <span style={{
+            display: 'inline-block',
+            transition: 'transform 0.25s',
+            transform: statsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            fontSize: 14, lineHeight: 1,
+          }}>▲</span>
+          {statsOpen ? 'Hide Stats' : 'Show Stats'}
+        </button>
+
+        {/* Collapsible KPI bar */}
+        <AnimatePresence initial={false}>
+          {statsOpen && (
+            <motion.div
+              key="kpibar"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 80, opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
+            >
+              <KPIBar />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
       <WorkgraphToast visible={toast.visible} message={toast.message} />
     </motion.div>
   );

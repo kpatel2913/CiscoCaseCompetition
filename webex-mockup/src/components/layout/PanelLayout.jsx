@@ -3,7 +3,7 @@ export default function PanelLayout({ left, center, right, leftWidth = 280, righ
     <div className="flex flex-1 overflow-hidden h-full">
       {/* Left panel */}
       <div
-        className="flex flex-col flex-shrink-0 overflow-hidden"
+      className="panel-layout-left flex flex-col flex-shrink-0 overflow-hidden"
         style={{
           width: leftWidth,
           borderRight: '1px solid var(--webex-border)',
@@ -14,7 +14,7 @@ export default function PanelLayout({ left, center, right, leftWidth = 280, righ
       </div>
 
       {/* Center panel */}
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="panel-layout-center flex flex-col flex-1 overflow-hidden">
         {center}
       </div>
 

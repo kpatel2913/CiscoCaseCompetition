@@ -936,22 +936,53 @@ input[type="range"].progress-slider::-webkit-slider-thumb {
   }
   .industry-sidebar {
     width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     border-right: none !important;
     border-bottom: 1px solid var(--webex-border) !important;
     flex-direction: row !important;
     overflow-x: auto !important;
+    overflow-y: hidden !important;
     -webkit-overflow-scrolling: touch !important;
     padding: 8px 12px !important;
     flex-shrink: 0 !important;
-    gap: 6px !important;
+    gap: 0 !important;
+    /* Make aside itself a scroll container */
+    display: flex !important;
+    align-items: center !important;
   }
-  .industry-sidebar > * { flex-shrink: 0 !important; }
-  /* Hide section headers inside sidebar on mobile */
-  .industry-sidebar h4,
-  .industry-sidebar .industry-sidebar-section { display: none !important; }
-  /* Show coming soon as horizontal pills */
-  .industry-sidebar .industry-coming-soon { display: none !important; }
+  /* Hide the "Your Packs" and "Coming soon" sections */
+  .industry-sidebar > div:not(:first-child) {
+    display: none !important;
+  }
+  /* Convert the industries inner container to a horizontal row */
+  .industry-sidebar > div:first-child {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+    width: auto !important;
+  }
+  /* Hide the "Industries" section label */
+  .industry-sidebar > div:first-child > h4 {
+    display: none !important;
+  }
+  /* Convert the industry buttons list to horizontal */
+  .industry-sidebar > div:first-child > div {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+  }
+  /* Style each button as a horizontal pill */
+  .industry-sidebar button {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    padding: 6px 12px !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    justify-content: center !important;
+    border-left: none !important;
+  }
   .pack-grid {
     grid-template-columns: 1fr !important;
   }
@@ -973,6 +1004,98 @@ input[type="range"].progress-slider::-webkit-slider-thumb {
   }
   .workflows-search input {
     width: 100% !important;
+  }
+
+  /* ── TopBar ── */
+  /* Hide profile name & chevron — show only avatar + bell */
+  .topbar-name,
+  .topbar-chevron {
+    display: none !important;
+  }
+  /* Tighten the top bar on mobile */
+  .top-bar-mobile {
+    padding: 0 12px !important;
+    gap: 8px !important;
+  }
+
+  /* ── PanelLayout (Messaging) ── */
+  /* On mobile, stack left and right panels; hide the space list */
+  .panel-layout-left {
+    display: none !important;
+  }
+  .panel-layout-center {
+    width: 100% !important;
+    flex: 1 !important;
+  }
+
+  /* ── Workgraph: hide right panel on mobile, graph fills full width ── */
+  .wg-right-panel {
+    display: none !important;
+  }
+  .wg-graph {
+    width: 100% !important;
+    flex: 1 !important;
+    min-height: 360px !important;
+  }
+  .wg-main {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+
+  /* ── Pre-join modal: ensure it doesn't clip into bottom nav ── */
+  .prejoin-modal {
+    max-height: calc(100vh - 64px - env(safe-area-inset-bottom)) !important;
+    margin-bottom: 0 !important;
+    bottom: 64px !important;
+    top: 0 !important;
+    overflow-y: auto !important;
+  }
+
+  /* ── Meetings: CTA button row ── */
+  .meetings-cta-row {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .meetings-cta-row button {
+    width: 100% !important;
+  }
+  .meetings-cta-divider {
+    display: none !important;
+  }
+
+  /* ── AI Chat FAB: hide label text when drawer is open ── */
+  .ai-chat-fab-label {
+    display: none !important;
+  }
+  /* Make FAB icon-only, round on mobile */
+  .ai-chat-fab {
+    padding: 0 !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 50% !important;
+    justify-content: center !important;
+  }
+
+  /* ── Daily Briefing: ensure content clears bottom elements ── */
+  .briefing-left {
+    padding-bottom: 80px !important;
+  }
+
+  /* ── InCall: video tiles stack properly ── */
+  .video-tiles {
+    flex-direction: column !important;
+  }
+  .video-tiles > * {
+    width: 100% !important;
+    min-height: 200px !important;
+  }
+
+  /* ── Control bar: scrollable ── */
+  .control-bar {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    justify-content: flex-start !important;
+    padding: 0 12px !important;
   }
 }
 
