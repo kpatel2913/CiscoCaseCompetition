@@ -3,10 +3,6 @@ import { mockSpaces } from '../data/mockSpaces';
 import { mockMessages } from '../data/mockMessages';
 
 const useAppStore = create((set, get) => ({
-  // Active navigation
-  activeView: 'messaging',
-  setActiveView: (view) => set({ activeView: view }),
-
   // Messaging
   activeSpaceId: 'space-1',
   spaces: mockSpaces,
@@ -142,10 +138,12 @@ const useAppStore = create((set, get) => ({
     });
 
     if (resolvedRecapId) {
-      set({ recapMeetingId: resolvedRecapId, activeView: 'meeting-recap' });
+      set({ recapMeetingId: resolvedRecapId });
+      return '/meeting-recap';
     } else {
-      set({ activeView: 'meetings', showMeetingEndedToast: true });
+      set({ showMeetingEndedToast: true });
       setTimeout(() => set({ showMeetingEndedToast: false }), 4000);
+      return '/meeting';
     }
   },
 

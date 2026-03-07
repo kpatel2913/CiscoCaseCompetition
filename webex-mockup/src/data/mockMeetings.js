@@ -31,7 +31,7 @@ export const mockMeetings = [
     id: "mtg-3",
     title: "AI Advisory Panel — Demo Day",
     host: "me",
-    hostName: "Alex Morgan",
+    hostName: "Kris Patel",
     startTime: "2025-10-15T10:00:00Z",
     endTime: "2025-10-15T11:30:00Z",
     attendees: ["me", "u1", "u5", "u4", "u7"],

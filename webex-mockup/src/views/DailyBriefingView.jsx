@@ -2,7 +2,8 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play, Pause, ChevronDown, ChevronUp, Send, Bot, X,
-  CheckCircle, AlertCircle, Info, Mic, MicOff, Upload as UploadIcon
+  CheckCircle, AlertCircle, Info, Mic, MicOff, Upload as UploadIcon,
+  Pencil, Trash2
 } from 'lucide-react';
 
 import {
@@ -70,75 +71,7 @@ function formatTime(s) {
   return `${m}:${sec.toString().padStart(2, '0')}`;
 }
 
-// ─────────────────────────────────────────────
-//  useCountUp
-// ─────────────────────────────────────────────
-function useCountUp(target, duration = 1200) {
-  const [value, setValue] = useState(0);
-  useEffect(() => {
-    const start = performance.now();
-    const tick = (now) => {
-      const t = Math.min((now - start) / duration, 1);
-      const ease = 1 - Math.pow(1 - t, 3);
-      setValue(Math.round(ease * target));
-      if (t < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, [target, duration]);
-  return value;
-}
 
-// ─────────────────────────────────────────────
-//  Readiness Gauge
-// ─────────────────────────────────────────────
-function ReadinessGauge({ score = 84 }) {
-  const [animated, setAnimated] = useState(0);
-  const displayScore = useCountUp(score, 1400);
-  const radius = 30;
-  const circumference = 2 * Math.PI * radius;
-
-  useEffect(() => {
-    const timeout = setTimeout(() => setAnimated(score), 200);
-    return () => clearTimeout(timeout);
-  }, [score]);
-
-  const offset = circumference - (animated / 100) * circumference;
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-      <div style={{ position: 'relative', width: 80, height: 80 }} title="Based on open action items, today's meetings, and pending decisions">
-        <svg width="80" height="80" style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx="40" cy="40" r={radius} fill="none" stroke="var(--webex-border)" strokeWidth="5" />
-          <circle
-            cx="40" cy="40" r={radius}
-            fill="none"
-            stroke="url(#gaugeGrad)"
-            strokeWidth="5"
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            style={{ transition: 'stroke-dashoffset 1.4s ease-out' }}
-          />
-          <defs>
-            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#FFB830" />
-              <stop offset="100%" stopColor="#07D87C" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <div style={{
-          position: 'absolute', inset: 0, display: 'flex',
-          alignItems: 'center', justifyContent: 'center',
-          flexDirection: 'column',
-        }}>
-          <span style={{ fontSize: 22, fontWeight: 800, color: '#E8F4F8', lineHeight: 1 }}>{displayScore}</span>
-        </div>
-      </div>
-      <span style={{ fontSize: 11, color: '#8E8E93' }}>Ready for today</span>
-      <span style={{ fontSize: 10, color: 'var(--webex-muted)' }}>Last updated: 7:02 AM</span>
-    </div>
-  );
-}
 
 // ─────────────────────────────────────────────
 //  Greeting Header
@@ -154,7 +87,7 @@ function GreetingHeader({ scenarioData, scenarioFileName, handleFileUpload, clea
     }}>
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <h1 style={{ fontSize: 26, fontWeight: 700, color: '#E8F4F8', lineHeight: 1 }}>
-          Good morning, Kris ☀️
+          Good morning, Kris
         </h1>
         <p style={{ fontSize: 13, color: '#8E8E93', marginTop: 6 }}>
           Sunday, Mar 1 · Your briefing covers 6 meetings from the past 5 days
@@ -170,7 +103,7 @@ function GreetingHeader({ scenarioData, scenarioFileName, handleFileUpload, clea
                 <button className="scenario-clear" onClick={clearScenario}>✕</button>
               </div>
             ) : (
-              <label className="scenario-upload-btn">
+              <label className="scenario-upload-btn" style={{ display: 'none' }}>
                 <UploadIcon size={14} />
                 Load scenario
                 <input
@@ -182,7 +115,6 @@ function GreetingHeader({ scenarioData, scenarioFileName, handleFileUpload, clea
               </label>
             )}
           </div>
-          <ReadinessGauge score={84} />
         </div>
       </motion.div>
     </div>
@@ -406,7 +338,7 @@ function BriefingPlayer({ onSectionChange, elapsed, setElapsed }) {
       />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
-        <span style={{ fontSize: 10, color: '#5E5E63' }}>🎙 AI-generated briefing · Rachel (ElevenLabs)</span>
+        <span style={{ fontSize: 10, color: '#5E5E63' }}>AI-generated briefing · Antoni (ElevenLabs)</span>
         <span style={{ fontSize: 10, color: '#5E5E63' }}>Covers: {SECTION_TIMES.length} topics</span>
       </div>
     </div>
@@ -431,7 +363,7 @@ function BriefingSection({ id, icon, title, isActive, children, defaultOpen = tr
           textAlign: 'left',
         }}
       >
-        <span style={{ fontSize: 16 }}>{icon}</span>
+        {icon && <span style={{ fontSize: 16 }}>{icon}</span>}
         <span style={{ flex: 1, fontWeight: 700, fontSize: 13, color: '#E8F4F8' }}>{title}</span>
         {isActive && (
           <motion.span
@@ -492,7 +424,7 @@ function WhatMattersCard({ scenarioData }) {
             background: '#0D0D0D', border: '1px solid var(--webex-border)', borderRadius: 6,
             padding: '3px 9px', fontSize: 11, color: '#8E8E93', cursor: 'pointer',
           }}>
-            📹 {chip}
+            {chip}
           </span>
         ))}
       </div>
@@ -504,11 +436,14 @@ function WhatMattersCard({ scenarioData }) {
 //  Card 2: Action Items
 // ─────────────────────────────────────────────
 function ActionItemsCard({ onToast, scenarioData }) {
+  const [items, setItems] = useState(ACTION_ITEMS);
   const [checked, setChecked] = useState(() => {
     const init = {};
     ACTION_ITEMS.forEach(i => { if (i.defaultChecked) init[i.id] = true; });
     return init;
   });
+  const [editingId, setEditingId] = useState(null);
+  const [editText, setEditText] = useState('');
 
   if (scenarioData) {
     const briefing = parseBriefingFromScenario(scenarioData);
@@ -524,15 +459,21 @@ function ActionItemsCard({ onToast, scenarioData }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {ACTION_ITEMS.map(item => {
+      <AnimatePresence>
+      {items.map(item => {
         const isChecked = !!checked[item.id];
+        const isEditing = editingId === item.id;
         return (
           <motion.div
             key={item.id}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
             layout
             style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}
           >
             <button
+              className="briefing-checkbox"
               onClick={() => {
                 setChecked(c => ({ ...c, [item.id]: !c[item.id] }));
                 if (!checked[item.id]) onToast('Action item checked off ✓');
@@ -546,20 +487,84 @@ function ActionItemsCard({ onToast, scenarioData }) {
             >
               {isChecked && <CheckCircle size={12} style={{ color: '#000' }} />}
             </button>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                <span style={{
-                  fontSize: 13, color: isChecked ? '#5E5E63' : '#E8F4F8',
-                  textDecoration: isChecked ? 'line-through' : 'none',
-                  opacity: isChecked ? 0.5 : 1,
-                  transition: 'all 0.3s',
-                }}>
-                  {item.text}
-                </span>
-                <span style={{
-                  width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
-                  background: priorityColor[item.priority] || '#5E5E63',
-                }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        setItems(items.map(i => i.id === item.id ? { ...i, text: editText } : i));
+                        setEditingId(null);
+                        onToast('Action item updated ✓');
+                      }
+                      if (e.key === 'Escape') setEditingId(null);
+                    }}
+                    onBlur={() => {
+                      setItems(items.map(i => i.id === item.id ? { ...i, text: editText } : i));
+                      setEditingId(null);
+                      onToast('Action item updated ✓');
+                    }}
+                    autoFocus
+                    style={{
+                      background: 'rgba(0,188,240,0.1)',
+                      border: '1px solid var(--webex-blue)',
+                      color: '#E8F4F8',
+                      fontSize: 13,
+                      padding: '2px 6px',
+                      borderRadius: 4,
+                      outline: 'none',
+                      flex: 1,
+                      width: '100%',
+                    }}
+                  />
+                ) : (
+                  <span style={{
+                    fontSize: 13, color: isChecked ? '#5E5E63' : '#E8F4F8',
+                    textDecoration: isChecked ? 'line-through' : 'none',
+                    opacity: isChecked ? 0.5 : 1,
+                    transition: 'all 0.3s',
+                    flex: 1,
+                    whiteSpace: 'normal',
+                    wordBreak: 'break-word',
+                  }}>
+                    {item.text}
+                  </span>
+                )}
+                
+                {!isEditing && (
+                  <span style={{
+                    width: 7, height: 7, borderRadius: '50%', flexShrink: 0, marginTop: 6,
+                    background: priorityColor[item.priority] || '#5E5E63',
+                  }} />
+                )}
+
+                {!isChecked && !isEditing && (
+                  <div style={{ display: 'flex', gap: 6, opacity: 0.8, marginLeft: 'auto' }}>
+                    <button
+                      onClick={() => {
+                        setEditingId(item.id);
+                        setEditText(item.text);
+                      }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#8E8E93' }}
+                      title="Edit"
+                    >
+                      <Pencil size={13} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setItems(items.filter(i => i.id !== item.id));
+                        onToast('Action item deleted');
+                      }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#FF6B6B' }}
+                      title="Delete"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                )}
               </div>
               <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 3 }}>
                 <span style={{
@@ -581,6 +586,7 @@ function ActionItemsCard({ onToast, scenarioData }) {
           </motion.div>
         );
       })}
+      </AnimatePresence>
     </div>
   );
 }
@@ -617,14 +623,14 @@ function DecisionsCard({ scenarioData }) {
                 fontSize: 10, fontWeight: 700, color: '#FFB830',
                 background: 'rgba(255,184,48,0.15)', borderRadius: 20, padding: '1px 7px',
               }}>
-                ⏳ {d.when}
+                {d.when}
               </span>
             ) : (
               <span style={{
                 fontSize: 10, color: '#07D87C',
                 background: 'rgba(7,216,124,0.1)', borderRadius: 20, padding: '1px 7px',
               }}>
-                ✓ {d.when}
+                {d.when}
               </span>
             )}
             <span style={{ fontSize: 10, color: '#5E5E63' }}>{d.meeting}</span>
@@ -653,7 +659,7 @@ function HeadsUpCard({ onToast, scenarioData }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {HEADS_UP.map(h => (
         <div key={h.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-          <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>{h.icon}</span>
+          {h.icon && <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>{h.icon}</span>}
           <div style={{ flex: 1 }}>
             <span style={{ fontSize: 13, color: '#C0C0C8', lineHeight: 1.5 }}>{h.text}</span>
             {h.action && (
@@ -742,7 +748,6 @@ function SourceMeetings() {
                   display: 'flex', alignItems: 'center', gap: 10,
                   background: '#121212', borderRadius: 8, padding: '8px 12px',
                 }}>
-                  <span style={{ fontSize: 16 }}>📹</span>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 12, color: '#E8F4F8', fontWeight: 500 }}>{m.title}</div>
                     <div style={{ fontSize: 10, color: '#8E8E93' }}>{m.date} · {m.duration}</div>
@@ -773,7 +778,6 @@ function DifferentiatorCard() {
       borderRadius: '0 8px 8px 0', padding: '10px 14px', marginBottom: 12,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 6 }}>
-        <span style={{ fontSize: 14 }}>💡</span>
         <span style={{ fontSize: 12, fontWeight: 700, color: '#4ADE80' }}>How this differs from existing Webex summaries</span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, paddingLeft: 4 }}>
@@ -1272,23 +1276,23 @@ export default function DailyBriefingView() {
             onSectionChange={handleSectionChange}
           />
 
-          <BriefingSection id="what-matters" icon="🎯" title="What matters today" isActive={activeSection === 'what-matters'}>
+          <BriefingSection id="what-matters" icon="" title="What matters today" isActive={activeSection === 'what-matters'}>
             <WhatMattersCard scenarioData={scenarioData} />
           </BriefingSection>
 
-          <BriefingSection id="action-items" icon="📋" title="Open action items" isActive={activeSection === 'action-items'}>
+          <BriefingSection id="action-items" icon="" title="Open action items" isActive={activeSection === 'action-items'}>
             <ActionItemsCard onToast={showToast} scenarioData={scenarioData} />
           </BriefingSection>
 
-          <BriefingSection id="decisions" icon="⚡" title="Decisions made this week" isActive={activeSection === 'decisions'}>
+          <BriefingSection id="decisions" icon="" title="Decisions made this week" isActive={activeSection === 'decisions'}>
             <DecisionsCard scenarioData={scenarioData} />
           </BriefingSection>
 
-          <BriefingSection id="heads-up" icon="🔮" title="Heads up" isActive={activeSection === 'heads-up'}>
+          <BriefingSection id="heads-up" icon="" title="Heads up" isActive={activeSection === 'heads-up'}>
             <HeadsUpCard onToast={showToast} scenarioData={scenarioData} />
           </BriefingSection>
 
-          <BriefingSection id="upcoming" icon="📅" title="Upcoming this week" isActive={activeSection === 'upcoming'} defaultOpen={false}>
+          <BriefingSection id="upcoming" icon="" title="Upcoming this week" isActive={activeSection === 'upcoming'} defaultOpen={false}>
             <UpcomingCard />
           </BriefingSection>
 

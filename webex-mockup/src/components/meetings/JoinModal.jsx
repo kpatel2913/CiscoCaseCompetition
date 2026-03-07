@@ -9,7 +9,7 @@ export default function JoinModal() {
   const { joinModalOpen, setJoinModalOpen, joinCall, setActiveView } = useAppStore();
   const [meetingNum, setMeetingNum] = useState('');
   const [password, setPassword] = useState('');
-  const [displayName] = useState('Alex Morgan');
+  const [displayName] = useState('Kris Patel');
 
   const handleJoin = () => {
     // Try to find a matching meeting or create a generic one
@@ -18,7 +18,7 @@ export default function JoinModal() {
       id: 'instant',
       title: 'Instant Meeting',
       host: 'me',
-      hostName: 'Alex Morgan',
+      hostName: 'Kris Patel',
       attendees: ['me', 'u1', 'u2', 'u3'],
       attendeeCount: 4,
       meetingNumber: meetingNum || '000 000 0000',

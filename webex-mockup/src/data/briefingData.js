@@ -24,15 +24,15 @@ export const ACTION_ITEMS = [
 export const DECISIONS = [
   { id: 'd1', topic: 'Mobile scope',       outcome: 'Keep — not cutting',          status: 'confirmed', when: 'Mon', meeting: 'Design Review' },
   { id: 'd2', topic: 'Dashboard',          outcome: 'Defer to Q4',                 status: 'confirmed', when: 'Fri', meeting: '1:1 with Maya' },
-  { id: 'd3', topic: 'API rate-limiting',  outcome: '⏳ Pending — today',           status: 'pending',  when: 'Today', meeting: 'Q3 Roadmap Sync' },
+  { id: 'd3', topic: 'API rate-limiting',  outcome: 'Pending — today',           status: 'pending',  when: 'Today', meeting: 'Q3 Roadmap Sync' },
   { id: 'd4', topic: 'Frontend scope',     outcome: 'Hold',                        status: 'confirmed', when: 'Tue', meeting: 'API Standup' },
 ];
 
 // ─── Heads-up alerts ──────────────────────────────────────────────
 export const HEADS_UP = [
-  { id: 'h1', icon: '⚠', color: '#FFB830', text: '3 attendees in your 2pm meeting haven\'t confirmed.', action: 'Send reminder →' },
-  { id: 'h2', icon: 'ℹ', color: '#00BCF0', text: 'API team\'s standup notes flag a blocker affecting your roadmap.', action: 'Review →' },
-  { id: 'h3', icon: '✓', color: '#07D87C', text: 'Design team submitted the mobile spec — ahead of schedule.', action: null },
+  { id: 'h1', icon: '', color: '#FFB830', text: '3 attendees in your 2pm meeting haven\'t confirmed.', action: 'Send reminder →' },
+  { id: 'h2', icon: '', color: '#00BCF0', text: 'API team\'s standup notes flag a blocker affecting your roadmap.', action: 'Review →' },
+  { id: 'h3', icon: '', color: '#07D87C', text: 'Design team submitted the mobile spec — ahead of schedule.', action: null },
 ];
 
 // ─── Upcoming meetings ────────────────────────────────────────────

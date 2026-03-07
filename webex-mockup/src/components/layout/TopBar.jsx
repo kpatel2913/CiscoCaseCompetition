@@ -153,7 +153,7 @@ export default function TopBar() {
             onMouseLeave={e => { if(!profileOpen) e.currentTarget.style.background = 'transparent'; }}
           >
             <Avatar userId="me" size={28} showPresence={false} />
-            <span className="topbar-name text-sm font-medium" style={{ color: 'var(--webex-text)' }}>Alex Morgan</span>
+            <span className="topbar-name text-sm font-medium" style={{ color: 'var(--webex-text)' }}>Kris Patel</span>
             <ChevronDown className="topbar-chevron" size={13} style={{ color: 'var(--webex-muted)' }} />
           </button>
 
@@ -168,7 +168,7 @@ export default function TopBar() {
                 style={{ width: 200, background: 'var(--webex-surface)', border: '1px solid var(--webex-border)', boxShadow: '0 16px 40px rgba(0,0,0,0.5)', zIndex: 50 }}
               >
                 <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--webex-border)' }}>
-                  <p className="font-semibold text-sm" style={{ color: 'var(--webex-text)' }}>Alex Morgan</p>
+                  <p className="font-semibold text-sm" style={{ color: 'var(--webex-text)' }}>Kris Patel</p>
                   <p className="text-xs mt-0.5" style={{ color: 'var(--webex-muted)' }}>Product Strategist</p>
                   <div className="flex items-center gap-1.5 mt-2">
                     <div className="rounded-full" style={{ width: 7, height: 7, background: 'var(--webex-green)' }} />

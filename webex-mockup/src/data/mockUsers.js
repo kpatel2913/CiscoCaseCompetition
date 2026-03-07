@@ -109,14 +109,14 @@ export const mockUsers = [
   },
   {
     id: "me",
-    name: "Alex Morgan",
+    name: "Kris Patel",
     title: "Product Strategist",
     department: "Strategy",
-    email: "a.morgan@acme.com",
+    email: "k.patel@acme.com",
     avatar: null,
     presence: "active",
     timezone: "PST",
-    initials: "AM",
+    initials: "KP",
     color: "#00BCF0"
   }
 ];

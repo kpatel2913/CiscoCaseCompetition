@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   ExternalLink, X, Search, Download, ChevronDown, UserPlus, Copy,
   Shield, BarChart2, LayoutGrid, AlertTriangle
@@ -257,6 +258,7 @@ function VideoTiles({ localVideoRef, cameraOn }) {
 
 // ─── InCallView ─────────────────────────────────────────────────────────────
 export default function InCallView() {
+  const navigate = useNavigate();
   const {
     currentMeeting, callDuration,
     participantsPanelOpen, toggleParticipantsPanel,
@@ -355,8 +357,9 @@ export default function InCallView() {
     }
 
     // 4. Navigate to recap (store handles view change)
-    endCall(resolvedId);
-  }, [meetingId, stopTranscription, setInterimText, endCall]);
+    const redirectPath = endCall(resolvedId);
+    navigate(redirectPath);
+  }, [meetingId, stopTranscription, setInterimText, endCall, navigate]);
 
   const closePanel = () => setActivePanel(null);
 

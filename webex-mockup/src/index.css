@@ -1457,6 +1457,15 @@ input[type="range"].progress-slider::-webkit-slider-thumb {
   .activity-feed-list {
     padding-bottom: 100px !important;
   }
+  /* ── Daily Briefing: Checkboxes size on mobile ── */
+  button.briefing-checkbox {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
+  }
 }
 
 @keyframes slideUpMobile {

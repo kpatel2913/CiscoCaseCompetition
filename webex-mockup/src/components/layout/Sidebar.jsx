@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  MessageSquare, Video, Phone, Users, Settings,
-  Grid3x3, ChevronRight, Network, Sun, Package
+  MessageSquare, Video, Users, Settings,
+  ChevronRight, Network, Sun, Package
 } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
 
@@ -19,19 +20,17 @@ function useIsMobile() {
 const navItems = [
   { id: 'messaging',  icon: MessageSquare, label: 'Messaging' },
   { id: 'meetings',   icon: Video,         label: 'Meetings' },
-  { id: 'calling',   icon: Phone,          label: 'Calling' },
-  { id: 'people',    icon: Users,          label: 'People' },
-  { id: 'apps',      icon: Grid3x3,        label: 'Apps' },
   { id: 'workgraph', icon: Network,        label: 'Workgraph', badge: 'NEW' },
   { id: 'briefing',  icon: Sun,            label: 'Daily Briefing', badge: 'NEW' },
   { id: 'workflows', icon: Package,        label: 'Workflow Packs', badge: 'NEW' },
 ];
 
 export default function Sidebar() {
-  const { activeView, setActiveView } = useAppStore();
   const [expanded, setExpanded] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   const isMobile = useIsMobile();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // ── Mobile: render as bottom navigation bar ──────────────────────────────
   if (isMobile) {
@@ -47,12 +46,13 @@ export default function Sidebar() {
         }}
       >
         {mobileNavItems.map(({ id, icon: Icon, label }) => {
-          const isActive = activeView === id;
+          const isActive = location.pathname.includes(id) || (id === 'messaging' && location.pathname === '/messages');
+          const routeId = id === 'messaging' ? 'messages' : id === 'meetings' ? 'meeting' : id === 'briefing' ? 'dailybriefing' : id;
           return (
             <button
               key={id}
               className="sidebar-item"
-              onClick={() => setActiveView(id)}
+              onClick={() => navigate(`/${routeId}`)}
               style={{
                 flex: 1,
                 background: 'none',
@@ -134,7 +134,9 @@ export default function Sidebar() {
       {/* Nav items */}
       <nav className="flex flex-col flex-1 py-3 gap-1 px-2 overflow-hidden">
         {navItems.map(({ id, icon: Icon, label }) => {
-          const isActive = activeView === id;
+          const isActive = location.pathname.includes(id) || (id === 'messaging' && location.pathname === '/messages') || (id === 'briefing' && location.pathname === '/dailybriefing');
+          const routeId = id === 'messaging' ? 'messages' : id === 'meetings' ? 'meeting' : id === 'briefing' ? 'dailybriefing' : id;
+
           return (
             <div
               key={id}
@@ -151,7 +153,7 @@ export default function Sidebar() {
                 />
               )}
               <button
-                onClick={() => setActiveView(id)}
+                onClick={() => navigate(`/${routeId}`)}
                 className="w-full flex items-center gap-3 rounded-lg transition-all duration-150 relative overflow-hidden"
                 style={{
                   height: 40,
