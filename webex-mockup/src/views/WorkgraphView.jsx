@@ -85,7 +85,7 @@ function LinkTooltip({ tooltip }) {
 function GraphLegend() {
   return (
     <div style={{
-      position: 'absolute', bottom: 16, right: 16,
+      position: 'absolute', top: 16, right: 16,
       background: 'rgba(0,0,0,0.85)', border: '1px solid var(--webex-border)',
       borderRadius: 10, padding: '8px 12px', zIndex: 5, backdropFilter: 'blur(8px)'
     }}>
@@ -851,10 +851,14 @@ function AIRecsTab({ isActive, onShowToast }) {
 //  KPI Bar
 // ─────────────────────────────────────────────
 const KPI_ITEMS = [
-  { label: 'Total interactions this month', value: 4832, trend: '+12%', up: true, good: true },
-  { label: 'Cross-team meetings',            value: 47,   trend: '−8%',  up: false, good: false },
-  { label: 'Avg decisions per week',         value: 5.4,  trend: '→ 0%', up: null,  good: null, isFloat: true },
-  { label: 'Teams at exhaustion risk',       value: 3,    trend: '+2',   up: true,  good: false },
+  { label: 'Total interactions this month', value: 4832, trend: '+12%',  up: true,  good: true  },
+  { label: 'Cross-team meetings',           value: 47,   trend: '−8%',   up: false, good: false },
+  { label: 'Avg decisions per week',        value: 5.4,  trend: '→ 0%',  up: null,  good: null,  isFloat: true },
+  { label: 'Teams at exhaustion risk',      value: 3,    trend: '+2',    up: true,  good: false },
+  { label: 'Alignment score',              value: 71,   trend: '−3pts', up: false, good: false },
+  { label: 'Active communication gaps',    value: 3,    trend: '+1',    up: true,  good: false },
+  { label: 'Avg response time (hrs)',       value: 2.4,  trend: '−0.6h', up: false, good: true,  isFloat: true },
+  { label: 'Avg meeting hrs / day',         value: 8.7,  trend: '+1.2h', up: true,  good: false, isFloat: true },
 ];
 
 function KPITile({ item }) {
@@ -864,12 +868,13 @@ function KPITile({ item }) {
 
   return (
     <div style={{
-      flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
-      alignItems: 'center', padding: '0 16px', borderRight: '1px solid #2A2A2C',
+      flex: '1 1 25%', display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      alignItems: 'center', padding: '10px 12px', borderRight: '1px solid #2A2A2C',
+      minWidth: 0,
     }}>
-      <div style={{ fontSize: 24, fontWeight: 800, color: '#E8F4F8', lineHeight: 1 }}>{display}</div>
-      <div style={{ fontSize: 11, color: '#8E8E93', marginTop: 3, textAlign: 'center', marginBottom: 4 }}>{item.label}</div>
-      <div style={{ fontSize: 12, fontWeight: 700, color: trendColor }}>{item.trend}</div>
+      <div style={{ fontSize: 22, fontWeight: 800, color: '#E8F4F8', lineHeight: 1 }}>{display}</div>
+      <div style={{ fontSize: 10, color: '#8E8E93', marginTop: 3, textAlign: 'center', marginBottom: 4, lineHeight: 1.3 }}>{item.label}</div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: trendColor }}>{item.trend}</div>
     </div>
   );
 }
@@ -877,7 +882,7 @@ function KPITile({ item }) {
 function KPIBar() {
   return (
     <div className="kpi-bar" style={{
-      display: 'flex', height: 80, background: '#141416',
+      display: 'flex', flexWrap: 'wrap', background: '#141416',
       borderTop: '1px solid #2A2A2C', flexShrink: 0,
     }}>
       {KPI_ITEMS.map((item, i) => (
@@ -1161,10 +1166,10 @@ export default function WorkgraphView() {
           {statsOpen && (
             <motion.div
               key="kpibar"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 80, opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              initial={{ maxHeight: 0, opacity: 0 }}
+              animate={{ maxHeight: 200, opacity: 1 }}
+              exit={{ maxHeight: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
               style={{ overflow: 'hidden' }}
             >
               <KPIBar />

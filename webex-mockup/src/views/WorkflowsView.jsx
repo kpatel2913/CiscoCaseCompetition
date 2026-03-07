@@ -334,7 +334,7 @@ export default function WorkflowsView() {
                     <span>{ind.icon}</span>
                     {ind.label}
                   </span>
-                  <span className="text-[10px] opacity-50">{ind.count}</span>
+                  <span className="text-xs text-gray-400 font-medium">{ind.count}</span>
                 </button>
               ))}
             </div>
