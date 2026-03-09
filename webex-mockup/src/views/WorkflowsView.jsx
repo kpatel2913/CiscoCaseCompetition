@@ -298,7 +298,7 @@ export default function WorkflowsView() {
           <h1 className="text-2xl font-bold text-white mb-1">Workflow Packs</h1>
           <p className="text-sm text-gray-400">Industry-ready automation. No IT team required.</p>
           
-          <div className="flex gap-4 mt-4">
+          <div className="flex gap-4 mt-4 workflows-stats">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-[#121212] border border-[var(--webex-border)] rounded-full text-[11px] text-gray-300">
               <Clock size={12} className="text-teal-500" />
               <span>Avg activation: 12 min</span>
