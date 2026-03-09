@@ -260,6 +260,7 @@ export default function WorkflowsView() {
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
   const [showLiveDashboard, setShowLiveDashboard] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   const visiblePacks = WORKFLOW_PACKS.filter(pack => {
     const matchesIndustry = selectedIndustry === 'all' || pack.industry === selectedIndustry;
@@ -314,7 +315,7 @@ export default function WorkflowsView() {
           </div>
         </div>
 
-        <div className="workflows-search relative">
+        <div className="workflows-search workflows-search--desktop relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
           <input 
             type="text"
@@ -332,6 +333,50 @@ export default function WorkflowsView() {
           <div>
             <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">Industries</h4>
             <div className="flex flex-col gap-1">
+              {/* Mobile Search Icon/Input */}
+              <div className="industry-search-mobile">
+                <AnimatePresence mode="wait">
+                  {isSearchExpanded ? (
+                    <motion.div 
+                      key="search-input"
+                      initial={{ width: 0, opacity: 0 }}
+                      animate={{ width: '160px', opacity: 1 }}
+                      exit={{ width: 0, opacity: 0 }}
+                      className="relative flex items-center h-[44px]"
+                    >
+                      <input 
+                        autoFocus
+                        type="text"
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full bg-[#1A1A1A] border border-teal-500/30 rounded-full py-1.5 pl-3 pr-8 text-[12px] text-white focus:outline-none focus:border-teal-500"
+                      />
+                      <button 
+                        className="absolute right-2 text-gray-500 hover:text-white"
+                        onClick={() => {
+                          setSearchQuery('');
+                          setIsSearchExpanded(false);
+                        }}
+                      >
+                        <X size={14} />
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <motion.button
+                      key="search-btn"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      onClick={() => setIsSearchExpanded(true)}
+                      className="industry-search-btn-mobile"
+                    >
+                      <Search size={18} />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+              </div>
+
               {INDUSTRIES.map(ind => (
                 <button
                   key={ind.id}

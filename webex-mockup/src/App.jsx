@@ -10,9 +10,38 @@ import WorkgraphView from './views/WorkgraphView';
 import DailyBriefingView from './views/DailyBriefingView';
 import WorkflowsView from './views/WorkflowsView';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export default function App() {
   const { isInCall } = useAppStore();
+
+  useEffect(() => {
+    let scrollTimeouts = new Map();
+
+    const handleScroll = (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      target.classList.add('is-scrolling');
+      
+      if (scrollTimeouts.has(target)) {
+        clearTimeout(scrollTimeouts.get(target));
+      }
+
+      const timeout = setTimeout(() => {
+        target.classList.remove('is-scrolling');
+        scrollTimeouts.delete(target);
+      }, 1000);
+
+      scrollTimeouts.set(target, timeout);
+    };
+
+    window.addEventListener('scroll', handleScroll, true);
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+      scrollTimeouts.forEach(timeout => clearTimeout(timeout));
+    };
+  }, []);
 
   // When in call, show full-screen meeting room (no sidebar/topbar)
   if (isInCall) {
