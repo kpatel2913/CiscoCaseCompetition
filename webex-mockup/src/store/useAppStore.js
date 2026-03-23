@@ -2,9 +2,9 @@ import { create } from 'zustand';
 import { mockSpaces } from '../data/mockSpaces';
 import { mockMessages } from '../data/mockMessages';
 
-// Read persisted theme; default to dark
+// Read persisted theme; default to light
 const savedTheme = localStorage.getItem('webex-theme');
-const initialDark = savedTheme ? savedTheme === 'dark' : true;
+const initialDark = savedTheme ? savedTheme === 'dark' : false;
 
 // Apply to DOM immediately to avoid flash
 if (!initialDark) {

@@ -2251,7 +2251,7 @@ to   { transform: translateY(0); }
 /* Outer page wrapper bg-black */
 [data-theme="light"] .workflows-layout,
 [data-theme="light"] .flex.flex-col.h-full {
-  background: #F5F5F5 !important;
+  background: var(--webex-navy) !important;
 }
 
 /* Main content scroll area bg-black */
@@ -2324,12 +2324,28 @@ to   { transform: translateY(0); }
   border-color: rgba(0,0,0,0.10) !important;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   LIGHT MODE – DAILY BRIEFING (AI Briefing page)
-   ═══════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  --webex-blue:           #00BCF0;
+  --webex-navy:           #FFFFFF;
+  --webex-surface:        #FFFFFF;
+  --webex-border:         #E5E5EA;
+  --webex-text:           #1C1C1E;
+  --webex-muted:          #636366;
+  --surface-2:            #FFFFFF;
+  --surface-3:            #F2F2F7;
+  --surface-4:            #E5E5EA;
+  --surface-5:            #D1D1D6;
+  --surface-card:         #FFFFFF;
+  --surface-card-alt:     #FFFFFF;
+  --topbar-search-bg:     #F2F2F7;
+  --hover-overlay:        rgba(0,0,0,0.04);
+  --wg-panel-bg:          #F2F2F7;
+  --wg-card-bg:           #FFFFFF;
+  --br-card-bg:           #FFFFFF;
+}
 
 /* Root container */
-[data-theme="light"] .briefing-view { background: #F4F4F6 !important; }
+[data-theme="light"] .briefing-view { background: #FFFFFF !important; }
 
 /* Greeting header */
 [data-theme="light"] .briefing-view .greeting-header {
@@ -2427,7 +2443,7 @@ to   { transform: translateY(0); }
 }
 [data-theme="light"] .workflows-layout,
 [data-theme="light"] .flex.flex-col.h-full.overflow-hidden {
-  background: #F5F5F5 !important;
+  background: var(--webex-navy) !important;
 }
 
 

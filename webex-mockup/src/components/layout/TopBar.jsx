@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Search, Bell, ChevronDown, X, Lightbulb } from 'lucide-react';
+import { Search, Bell, ChevronDown, X, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAppStore from '../../store/useAppStore';
 import Avatar from '../shared/Avatar';
@@ -107,11 +107,11 @@ export default function TopBar() {
           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
           title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
         >
-          <Lightbulb
-            size={17}
-            fill={isDarkMode ? 'none' : 'currentColor'}
-            style={{ transition: 'fill 250ms ease, color 250ms ease' }}
-          />
+          {isDarkMode ? (
+            <Sun size={17} style={{ transition: 'color 250ms ease' }} />
+          ) : (
+            <Moon size={17} style={{ transition: 'color 250ms ease' }} />
+          )}
         </button>
 
         {/* Notifications */}
