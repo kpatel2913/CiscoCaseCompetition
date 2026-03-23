@@ -20,9 +20,9 @@ function useIsMobile() {
 const navItems = [
   { id: 'messaging',  icon: MessageSquare, label: 'Messaging' },
   { id: 'meetings',   icon: Video,         label: 'Meetings' },
-  { id: 'workgraph', icon: Network,        label: 'Workgraph', badge: 'NEW' },
   { id: 'briefing',  icon: Sun,            label: 'Daily Briefing', badge: 'NEW' },
-  { id: 'workflows', icon: Package,        label: 'Workflow Packs', badge: 'NEW' },
+  { id: 'workgraph', icon: Network,        label: 'Workgraph', badge: 'NEW' },
+  { id: 'workflows', icon: Package,        label: 'Embedded Workflows', badge: 'NEW' },
 ];
 
 export default function Sidebar() {
