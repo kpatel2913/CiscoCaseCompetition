@@ -86,10 +86,10 @@ function GreetingHeader({ scenarioData, scenarioFileName, handleFileUpload, clea
       padding: '0 24px',
     }}>
       <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 700, color: '#E8F4F8', lineHeight: 1 }}>
+        <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--webex-text)', lineHeight: 1 }}>
           Good morning, Kris
         </h1>
-        <p style={{ fontSize: 13, color: '#8E8E93', marginTop: 6 }}>
+        <p style={{ fontSize: 13, color: 'var(--webex-muted)', marginTop: 6 }}>
           Sunday, Mar 1 · Your briefing covers 6 meetings from the past 5 days
         </p>
       </motion.div>
@@ -260,7 +260,7 @@ function BriefingPlayer({ onSectionChange, elapsed, setElapsed }) {
 
   return (
     <div style={{
-      background: '#0D0D0D', border: '1px solid var(--webex-border)', borderRadius: 12,
+      background: 'var(--webex-navy)', border: '1px solid var(--webex-border)', borderRadius: 12,
       padding: '14px 16px', marginBottom: 12,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
@@ -309,7 +309,7 @@ function BriefingPlayer({ onSectionChange, elapsed, setElapsed }) {
         {/* Time / loading label */}
         {isLoading
           ? <span style={{ fontSize: 11, color: '#07D87C', flexShrink: 0, fontStyle: 'italic' }}>Generating…</span>
-          : <span style={{ fontSize: 12, color: '#8E8E93', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
+          : <span style={{ fontSize: 12, color: 'var(--webex-muted)', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
               {formatTime(elapsed)} / {formatTime(DURATION)}
             </span>
         }
@@ -338,8 +338,8 @@ function BriefingPlayer({ onSectionChange, elapsed, setElapsed }) {
       />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
-        <span style={{ fontSize: 10, color: '#5E5E63' }}>AI-generated briefing · Antoni (ElevenLabs)</span>
-        <span style={{ fontSize: 10, color: '#5E5E63' }}>Covers: {SECTION_TIMES.length} topics</span>
+        <span style={{ fontSize: 10, color: 'var(--webex-muted)' }}>AI-generated briefing · Antoni (ElevenLabs)</span>
+        <span style={{ fontSize: 10, color: 'var(--webex-muted)' }}>Covers: {SECTION_TIMES.length} topics</span>
       </div>
     </div>
   );
@@ -364,7 +364,7 @@ function BriefingSection({ id, icon, title, isActive, children, defaultOpen = tr
         }}
       >
         {icon && <span style={{ fontSize: 16 }}>{icon}</span>}
-        <span style={{ flex: 1, fontWeight: 700, fontSize: 13, color: '#E8F4F8' }}>{title}</span>
+        <span style={{ flex: 1, fontWeight: 700, fontSize: 13, color: 'var(--webex-text)' }}>{title}</span>
         {isActive && (
           <motion.span
             animate={{ opacity: [1, 0.3, 1] }}
@@ -405,24 +405,24 @@ function WhatMattersCard({ scenarioData }) {
   if (scenarioData) {
     const briefing = parseBriefingFromScenario(scenarioData);
     return (
-      <div style={{ fontSize: 13, color: '#C0C0C8', lineHeight: 1.7 }}>
+      <div style={{ fontSize: 13, color: 'var(--webex-text)', lineHeight: 1.7 }}>
         <p style={{ whiteSpace: 'pre-wrap' }}>{briefing.summary || briefing.raw?.slice(0, 300)}</p>
       </div>
     );
   }
 
   return (
-    <div style={{ fontSize: 13, color: '#C0C0C8', lineHeight: 1.7 }}>
+    <div style={{ fontSize: 13, color: 'var(--webex-text)', lineHeight: 1.7 }}>
       <p>
-        Your <strong style={{ color: '#E8F4F8' }}>2:00 PM Q3 Roadmap Sync</strong> is the most critical meeting today.
+        Your <strong style={{ color: 'var(--webex-text)' }}>2:00 PM Q3 Roadmap Sync</strong> is the most critical meeting today.
         The API rate-limiting decision has been deferred across the last 3 meetings — today is likely the forcing function.{' '}
         <strong style={{ color: '#FFB830' }}>Be prepared to make a call.</strong>
       </p>
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
         {['Q3 Roadmap – Feb 18', 'API Standup – Feb 20', '1:1 Maya – Feb 21'].map(chip => (
           <span key={chip} style={{
-            background: '#0D0D0D', border: '1px solid var(--webex-border)', borderRadius: 6,
-            padding: '3px 9px', fontSize: 11, color: '#8E8E93', cursor: 'pointer',
+            background: 'var(--webex-navy)', border: '1px solid var(--webex-border)', borderRadius: 6,
+            padding: '3px 9px', fontSize: 11, color: 'var(--webex-muted)', cursor: 'pointer',
           }}>
             {chip}
           </span>
@@ -522,7 +522,7 @@ function ActionItemsCard({ onToast, scenarioData }) {
                   />
                 ) : (
                   <span style={{
-                    fontSize: 13, color: isChecked ? '#5E5E63' : '#E8F4F8',
+                    fontSize: 13, color: isChecked ? 'var(--webex-muted)' : 'var(--webex-text)',
                     textDecoration: isChecked ? 'line-through' : 'none',
                     opacity: isChecked ? 0.5 : 1,
                     transition: 'all 0.3s',
@@ -611,12 +611,12 @@ function DecisionsCard({ scenarioData }) {
         <div
           key={d.id}
           style={{
-            background: '#121212', border: `1px solid ${d.status === 'pending' ? '#FFB830' : 'var(--webex-border)'}`,
+            background: 'var(--webex-navy)', border: `1px solid ${d.status === 'pending' ? '#FFB830' : 'var(--webex-border)'}`,
             borderRadius: 10, padding: '10px 12px',
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 600, color: '#E8F4F8', marginBottom: 4 }}>{d.topic}</div>
-          <div style={{ fontSize: 12, color: '#A0A0A8', marginBottom: 6 }}>{d.outcome}</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--webex-text)', marginBottom: 4 }}>{d.topic}</div>
+          <div style={{ fontSize: 12, color: 'var(--webex-muted)', marginBottom: 6 }}>{d.outcome}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
             {d.status === 'pending' ? (
               <span className="pending-badge" style={{
@@ -661,7 +661,7 @@ function HeadsUpCard({ onToast, scenarioData }) {
         <div key={h.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
           {h.icon && <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>{h.icon}</span>}
           <div style={{ flex: 1 }}>
-            <span style={{ fontSize: 13, color: '#C0C0C8', lineHeight: 1.5 }}>{h.text}</span>
+            <span style={{ fontSize: 13, color: 'var(--webex-text)', lineHeight: 1.5 }}>{h.text}</span>
             {h.action && (
               <button
                 onClick={() => onToast(`${h.action.replace(' →', '')} — sent!`)}
@@ -692,14 +692,14 @@ function UpcomingCard() {
       {UPCOMING.map((m, i) => (
         <div key={i} style={{
           display: 'flex', alignItems: 'center', gap: 12,
-          background: '#121212', borderRadius: 8, padding: '8px 12px',
+          background: 'var(--webex-navy)', borderRadius: 8, padding: '8px 12px',
         }}>
           <div style={{ width: 60, flexShrink: 0 }}>
-            <div style={{ fontSize: 10, color: '#8E8E93', fontWeight: 600 }}>{m.day}</div>
-            <div style={{ fontSize: 12, color: '#E8F4F8' }}>{m.time}</div>
+            <div style={{ fontSize: 10, color: 'var(--webex-muted)', fontWeight: 600 }}>{m.day}</div>
+            <div style={{ fontSize: 12, color: 'var(--webex-text)' }}>{m.time}</div>
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13, color: '#E8F4F8', fontWeight: 500 }}>{m.title}</div>
+            <div style={{ fontSize: 13, color: 'var(--webex-text)', fontWeight: 500 }}>{m.title}</div>
           </div>
           <span style={{
             fontSize: 10, fontWeight: 600,
@@ -726,11 +726,11 @@ function SourceMeetings() {
         onClick={() => setOpen(o => !o)}
         style={{
           display: 'flex', alignItems: 'center', gap: 6, background: 'none',
-          border: 'none', cursor: 'pointer', color: '#8E8E93', fontSize: 12, padding: 0,
+          border: 'none', cursor: 'pointer', color: 'var(--webex-muted)', fontSize: 12, padding: 0,
         }}
       >
         {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-        <span>Briefing sourced from <strong style={{ color: '#E8F4F8' }}>6 meetings</strong> (Feb 18 – Feb 24)</span>
+        <span>Briefing sourced from <strong style={{ color: 'var(--webex-text)' }}>6 meetings</strong> (Feb 18 – Feb 24)</span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
@@ -746,11 +746,11 @@ function SourceMeetings() {
               {SOURCE_MEETINGS.map(m => (
                 <div key={m.id} style={{
                   display: 'flex', alignItems: 'center', gap: 10,
-                  background: '#121212', borderRadius: 8, padding: '8px 12px',
+                  background: 'var(--webex-navy)', borderRadius: 8, padding: '8px 12px',
                 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12, color: '#E8F4F8', fontWeight: 500 }}>{m.title}</div>
-                    <div style={{ fontSize: 10, color: '#8E8E93' }}>{m.date} · {m.duration}</div>
+                    <div style={{ fontSize: 12, color: 'var(--webex-text)', fontWeight: 500 }}>{m.title}</div>
+                    <div style={{ fontSize: 10, color: 'var(--webex-muted)' }}>{m.date} · {m.duration}</div>
                   </div>
                   <button style={{
                     fontSize: 11, color: '#00BCF0', background: 'none', border: 'none',
@@ -773,8 +773,8 @@ function SourceMeetings() {
 // ─────────────────────────────────────────────
 function DifferentiatorCard() {
   return (
-    <div style={{
-      background: '#1A2A1A', borderLeft: '3px solid #4ADE80',
+    <div className="briefing-diff-card" style={{
+      background: 'var(--br-ai-diff-bg)', borderLeft: '3px solid #4ADE80',
       borderRadius: '0 8px 8px 0', padding: '10px 14px', marginBottom: 12,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 6 }}>
@@ -790,7 +790,7 @@ function DifferentiatorCard() {
           <div key={i} style={{ display: 'flex', gap: 6, fontSize: 11 }}>
             {label && <strong style={{ color: '#4ADE80', minWidth: 50 }}>{label}</strong>}
             {!label && <span style={{ minWidth: 50 }} />}
-            <span style={{ color: '#8E8E93' }}>{text}</span>
+            <span style={{ color: 'var(--webex-muted)' }}>{text}</span>
           </div>
         ))}
       </div>
@@ -840,10 +840,10 @@ const speakText = async (text) => {
 function MessageText({ content }) {
   const parts = content.split(/(\*\*[^*]+\*\*)/g);
   return (
-    <span style={{ fontSize: 13, lineHeight: 1.6, color: '#C0C0C8', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+    <span style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--webex-text)', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
       {parts.map((part, i) => {
         if (part.startsWith('**') && part.endsWith('**')) {
-          return <strong key={i} style={{ color: '#E8F4F8' }}>{part.slice(2, -2)}</strong>;
+          return <strong key={i} style={{ color: 'var(--webex-text)', fontWeight: 800 }}>{part.slice(2, -2)}</strong>;
         }
         return <span key={i}>{part}</span>;
       })}
@@ -1056,11 +1056,11 @@ function AIChatPanel({ onClose, messages, setMessages, scenarioData }) {
           }}>
             <Bot size={15} style={{ color: '#000' }} />
           </div>
-          <span style={{ fontWeight: 700, fontSize: 14, color: '#E8F4F8' }}>Webex AI</span>
+          <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--webex-text)' }}>Webex AI</span>
         </div>
         <button
           onClick={onClose}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#8E8E93', display: 'flex', padding: 4 }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--webex-muted)', display: 'flex', padding: 4 }}
         >
           <X size={16} />
         </button>
@@ -1092,8 +1092,8 @@ function AIChatPanel({ onClose, messages, setMessages, scenarioData }) {
                           onClick={() => sendMessage(s)}
                           style={{
                             fontSize: 11, padding: '4px 10px', borderRadius: 16,
-                            background: 'rgba(0,188,240,0.1)', border: '1px solid rgba(0,188,240,0.25)',
-                            color: '#00BCF0', cursor: 'pointer',
+                            background: 'var(--br-ai-chip-bg)', border: '1px solid var(--br-ai-chip-border)',
+                            color: 'var(--webex-blue)', cursor: 'pointer',
                           }}
                         >
                           {s}
@@ -1102,15 +1102,15 @@ function AIChatPanel({ onClose, messages, setMessages, scenarioData }) {
                     </div>
                   )}
                 </div>
-                <span style={{ fontSize: 10, color: '#5E5E63', marginLeft: 4, marginTop: 3, display: 'block' }}>{msg.timestamp}</span>
+                <span style={{ fontSize: 10, color: 'var(--webex-muted)', marginLeft: 4, marginTop: 3, display: 'block' }}>{msg.timestamp}</span>
               </div>
             )}
             {msg.role === 'user' && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                 <div className="chat-message-user">
-                  <span style={{ fontSize: 13, color: '#E8F4F8' }}>{msg.content}</span>
+                  <span style={{ fontSize: 13, color: 'var(--webex-text)' }}>{msg.content}</span>
                 </div>
-                <span style={{ fontSize: 10, color: '#5E5E63', marginRight: 4, marginTop: 3 }}>{msg.timestamp}</span>
+                <span style={{ fontSize: 10, color: 'var(--webex-muted)', marginRight: 4, marginTop: 3 }}>{msg.timestamp}</span>
               </div>
             )}
           </motion.div>
@@ -1156,13 +1156,13 @@ function AIChatPanel({ onClose, messages, setMessages, scenarioData }) {
           placeholder={isListening ? 'Listening...' : 'Ask anything about your week...'}
           disabled={isTyping || isListening}
           style={{
-            flex: 1, background: '#121212', border: '1px solid var(--webex-border)',
-            borderRadius: 10, padding: '9px 13px', fontSize: 13, color: '#E8F4F8',
+            flex: 1, background: 'var(--webex-navy)', border: '1px solid var(--webex-border)',
+            borderRadius: 10, padding: '9px 13px', fontSize: 13, color: 'var(--webex-text)',
             outline: 'none', fontFamily: 'inherit',
             opacity: isListening ? 0.7 : 1,
           }}
           onFocus={e => e.target.style.borderColor = '#00BCF0'}
-          onBlur={e => e.target.style.borderColor = '#3A3A3C'}
+          onBlur={e => e.target.style.borderColor = 'var(--webex-border)'}
         />
         <button
           className={`voice-btn ${isListening ? 'voice-btn--active' : ''}`}
@@ -1176,13 +1176,13 @@ function AIChatPanel({ onClose, messages, setMessages, scenarioData }) {
           disabled={isTyping || isListening || !input.trim()}
           style={{
             width: 36, height: 36, borderRadius: 10, border: 'none', flexShrink: 0,
-            background: input.trim() ? 'linear-gradient(135deg, #00BCF0, #07D87C)' : '#252528',
+            background: input.trim() ? 'linear-gradient(135deg, #00BCF0, #07D87C)' : 'var(--webex-border)',
             cursor: input.trim() ? 'pointer' : 'default',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             transition: 'background 0.2s',
           }}
         >
-          <Send size={15} style={{ color: input.trim() ? '#000' : '#5E5E63' }} />
+          <Send size={15} style={{ color: input.trim() ? '#000' : 'var(--webex-muted)' }} />
         </button>
       </div>
     </div>
@@ -1236,10 +1236,11 @@ export default function DailyBriefingView() {
   return (
     <motion.div
       key="briefing"
+      className="briefing-view"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: '#111113', overflow: 'hidden' }}
+      style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: 'var(--webex-bg)', overflow: 'hidden' }}
     >
       <GreetingHeader 
         scenarioData={scenarioData} 

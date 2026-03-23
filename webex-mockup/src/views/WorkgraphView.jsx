@@ -86,21 +86,21 @@ function GraphLegend() {
   return (
     <div style={{
       position: 'absolute', top: 16, right: 16,
-      background: 'rgba(0,0,0,0.85)', border: '1px solid var(--webex-border)',
+      background: 'var(--webex-navy)', border: '1px solid var(--webex-border)',
       borderRadius: 10, padding: '8px 12px', zIndex: 5, backdropFilter: 'blur(8px)'
     }}>
-      <div style={{ fontSize: 11, color: '#8E8E93', fontWeight: 600, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Legend</div>
+      <div style={{ fontSize: 11, color: 'var(--webex-muted)', fontWeight: 600, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Legend</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         {Object.entries(DEPT_COLORS).map(([dept, color]) => (
           <div key={dept} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
-            <span style={{ fontSize: 11, color: '#C0C0C8' }}>{dept}</span>
+            <span style={{ fontSize: 11, color: 'var(--webex-text)' }}>{dept}</span>
           </div>
         ))}
-        <div style={{ borderTop: '1px solid #3A3A3C', marginTop: 4, paddingTop: 6, display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <div style={{ borderTop: '1px solid var(--webex-border)', marginTop: 4, paddingTop: 6, display: 'flex', flexDirection: 'column', gap: 5 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="var(--webex-border)" strokeWidth="2" /></svg>
-            <span style={{ fontSize: 11, color: '#C0C0C8' }}>Active</span>
+            <span style={{ fontSize: 11, color: 'var(--webex-text)' }}>Active</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
             <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#FF6B6B" strokeWidth="2" strokeDasharray="4,3" /></svg>
@@ -324,10 +324,11 @@ function GraphPanel({ deptFilter, onNodeClick, selectedNodeId }) {
       <button
         onClick={resetZoom}
         title="Reset zoom"
+        className="wg-reset-btn"
         style={{
           position: 'absolute', bottom: 16, right: 16, zIndex: 10,
-          background: 'rgba(0,0,0,0.7)', border: '1px solid #3A3A3C',
-          borderRadius: 8, color: '#8E8E93', fontSize: 11, padding: '5px 10px',
+          border: '1px solid var(--webex-border)',
+          borderRadius: 8, color: 'var(--webex-muted)', fontSize: 11, padding: '5px 10px',
           cursor: 'pointer', backdropFilter: 'blur(8px)',
         }}
       >
@@ -356,7 +357,7 @@ function PrivacyBanner() {
       alignItems: 'flex-start',
     }}>
       <Lock size={12} style={{ color: '#00BCF0', marginTop: 1, flexShrink: 0 }} />
-      <p style={{ fontSize: 11, color: '#8E8E93', lineHeight: 1.5 }}>
+      <p style={{ fontSize: 11, color: 'var(--webex-muted)', lineHeight: 1.5 }}>
         Workgraph data is aggregated across teams. Individual message content is never analyzed.
         Visible only to Team Leads and Executives. Control Hub personal insights remain private to each user.
       </p>
@@ -423,17 +424,17 @@ function TeamHealthTab() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontWeight: 700, fontSize: 13, color: '#E8F4F8' }}>Digital Exhaustion Risk</span>
+            <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--webex-text)' }}>Digital Exhaustion Risk</span>
           </div>
           {badge('HIGH RISK', '#FF6B6B', 'rgba(255,107,107,0.15)')}
         </div>
-        <p style={{ fontSize: 13, color: '#E8F4F8', marginBottom: 3 }}>Design team averaging <strong>14.2 meeting hours/day</strong></p>
-        <p style={{ fontSize: 11, color: '#8E8E93', marginBottom: 10 }}>Exceeds healthy threshold (6h) by 137% — sustained for 11 days</p>
+        <p style={{ fontSize: 13, color: 'var(--webex-text)', marginBottom: 3 }}>Design team averaging <strong>14.2 meeting hours/day</strong></p>
+        <p style={{ fontSize: 11, color: 'var(--webex-muted)', marginBottom: 10 }}>Exceeds healthy threshold (6h) by 137% — sustained for 11 days</p>
         <Sparkline color="#FF6B6B" />
         <div style={{ marginTop: 10, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 11 }}>{teamDot('#FF6B6B')} <span style={{ color: '#8E8E93' }}>Design</span></span>
-          <span style={{ fontSize: 11 }}>{teamDot('#FFB830')} <span style={{ color: '#8E8E93' }}>Sales</span></span>
-          <span style={{ fontSize: 11 }}>{teamDot('#FFB830')} <span style={{ color: '#8E8E93' }}>API Team</span></span>
+          <span style={{ fontSize: 11 }}>{teamDot('#FF6B6B')} <span style={{ color: 'var(--webex-muted)' }}>Design</span></span>
+          <span style={{ fontSize: 11 }}>{teamDot('#FFB830')} <span style={{ color: 'var(--webex-muted)' }}>Sales</span></span>
+          <span style={{ fontSize: 11 }}>{teamDot('#FFB830')} <span style={{ color: 'var(--webex-muted)' }}>API Team</span></span>
         </div>
       </div>
 
@@ -441,7 +442,7 @@ function TeamHealthTab() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontWeight: 700, fontSize: 13, color: '#E8F4F8' }}>Communication Gaps</span>
+            <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--webex-text)' }}>Communication Gaps</span>
           </div>
           {badge('3 GAPS', '#FFB830', 'rgba(255,184,48,0.15)')}
         </div>
@@ -452,7 +453,7 @@ function TeamHealthTab() {
         ].map((g, i) => (
           <div key={i} style={{ marginBottom: 10 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-              <span style={{ fontSize: 12, color: '#C0C0C8' }}>{g.label}</span>
+              <span style={{ fontSize: 12, color: 'var(--webex-muted)' }}>{g.label}</span>
               <span style={{ fontSize: 11, fontWeight: 700, color: '#FF6B6B' }}>{g.pct}%</span>
             </div>
             {severityBar(g.pct, '#FF6B6B')}
@@ -465,14 +466,14 @@ function TeamHealthTab() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontWeight: 700, fontSize: 13, color: '#E8F4F8' }}>Alignment Score</span>
+            <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--webex-text)' }}>Alignment Score</span>
           </div>
           {badge('MODERATE', '#FFD166', 'rgba(255,209,102,0.15)')}
         </div>
-        <div style={{ fontSize: 36, fontWeight: 800, color: '#E8F4F8', lineHeight: 1, marginBottom: 4 }}>
-          71 <span style={{ fontSize: 18, color: '#8E8E93', fontWeight: 400 }}>/ 100</span>
+        <div style={{ fontSize: 36, fontWeight: 800, color: 'var(--webex-text)', lineHeight: 1, marginBottom: 4 }}>
+          71 <span style={{ fontSize: 18, color: 'var(--webex-muted)', fontWeight: 400 }}>/ 100</span>
         </div>
-        <p style={{ fontSize: 11, color: '#8E8E93', marginBottom: 12 }}>3 teams showing goal misalignment signals based on project activity patterns</p>
+        <p style={{ fontSize: 11, color: 'var(--webex-muted)', marginBottom: 12 }}>3 teams showing goal misalignment signals based on project activity patterns</p>
         {[
           { team: 'Engineering', pct: 88, color: '#3B82F6' },
           { team: 'Design',      pct: 64, color: '#A78BFA' },
@@ -481,7 +482,7 @@ function TeamHealthTab() {
         ].map(({ team, pct, color }) => (
           <div key={team} style={{ marginBottom: 7 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-              <span style={{ fontSize: 11, color: '#C0C0C8' }}>{team}</span>
+              <span style={{ fontSize: 11, color: 'var(--webex-muted)' }}>{team}</span>
               <span style={{ fontSize: 11, fontWeight: 700, color }}>{pct}%</span>
             </div>
             {severityBar(pct, color)}
@@ -514,43 +515,43 @@ function SuggestSyncModal({ gap, onClose }) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.92, opacity: 0, y: 16 }}
             style={{
-              background: '#0D0D0D', border: '1px solid var(--webex-border)', borderRadius: 16,
+              background: 'var(--webex-navy)', border: '1px solid var(--webex-border)', borderRadius: 16,
               padding: 24, maxWidth: 440, width: '90%', boxShadow: '0 24px 60px rgba(0,0,0,0.6)'
             }}
             onClick={e => e.stopPropagation()}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ fontWeight: 700, fontSize: 16, color: '#E8F4F8' }}>Suggest a Sync</h3>
-              <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#8E8E93' }}>
+              <h3 style={{ fontWeight: 700, fontSize: 16, color: 'var(--webex-text)' }}>Suggest a Sync</h3>
+              <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--webex-muted)' }}>
                 <X size={18} />
               </button>
             </div>
             <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 11, color: '#8E8E93', display: 'block', marginBottom: 4 }}>To</label>
+              <label style={{ fontSize: 11, color: 'var(--webex-muted)', display: 'block', marginBottom: 4 }}>To</label>
               <div style={{
-                background: '#121212', border: '1px solid var(--webex-border)', borderRadius: 8,
-                padding: '8px 12px', fontSize: 13, color: '#E8F4F8'
+                background: 'var(--webex-navy)', border: '1px solid var(--webex-border)', borderRadius: 8,
+                padding: '8px 12px', fontSize: 13, color: 'var(--webex-text)'
               }}>
                 {gap.lead1} (Team Lead) · {gap.lead2} (Team Lead)
               </div>
             </div>
             <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 11, color: '#8E8E93', display: 'block', marginBottom: 4 }}>Subject</label>
+              <label style={{ fontSize: 11, color: 'var(--webex-muted)', display: 'block', marginBottom: 4 }}>Subject</label>
               <div style={{
-                background: '#121212', border: '1px solid var(--webex-border)', borderRadius: 8,
-                padding: '8px 12px', fontSize: 13, color: '#E8F4F8'
+                background: 'var(--webex-navy)', border: '1px solid var(--webex-border)', borderRadius: 8,
+                padding: '8px 12px', fontSize: 13, color: 'var(--webex-text)'
               }}>
                 Cross-team sync: {gap.teams}
               </div>
             </div>
             <div style={{ marginBottom: 20 }}>
-              <label style={{ fontSize: 11, color: '#8E8E93', display: 'block', marginBottom: 4 }}>Message</label>
+              <label style={{ fontSize: 11, color: 'var(--webex-muted)', display: 'block', marginBottom: 4 }}>Message</label>
               <textarea
                 defaultValue={`Hi ${gap.lead1.split(' ')[0]} and ${gap.lead2.split(' ')[0]},\n\nThe Workgraph has detected a communication gap between ${gap.teams}. I'd like to suggest a 30-minute weekly sync to improve alignment on shared projects.\n\nShared projects: ${gap.projects}\n\nWould next Tuesday at 10am work?`}
                 rows={6}
                 style={{
-                  width: '100%', background: '#121212', border: '1px solid var(--webex-border)',
-                  borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#E8F4F8',
+                  width: '100%', background: 'var(--webex-navy)', border: '1px solid var(--webex-border)',
+                  borderRadius: 8, padding: '8px 12px', fontSize: 12, color: 'var(--webex-text)',
                   resize: 'none', lineHeight: 1.6, outline: 'none', fontFamily: 'inherit'
                 }}
               />
@@ -645,7 +646,7 @@ function GapsTab({ onSuggestSync }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
               <AlertTriangle size={14} style={{ color: gap.riskColor }} />
-              <span style={{ fontWeight: 700, fontSize: 13, color: '#E8F4F8' }}>{gap.label}</span>
+              <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--webex-text)' }}>{gap.label}</span>
             </div>
             <span style={{
               fontSize: 10, fontWeight: 700, color: gap.riskColor,
@@ -655,12 +656,12 @@ function GapsTab({ onSuggestSync }) {
             </span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 10 }}>
-            <p style={{ fontSize: 12, color: '#C0C0C8' }}>Communication volume: <strong style={{ color: '#FF6B6B' }}>▼{gap.volumeDown} this month</strong></p>
-            <p style={{ fontSize: 12, color: '#8E8E93' }}>Last shared meeting: {gap.lastMeeting}</p>
-            <p style={{ fontSize: 12, color: '#8E8E93' }}>Shared projects: {gap.projects}</p>
+            <p style={{ fontSize: 12, color: 'var(--webex-muted)' }}>Communication volume: <strong style={{ color: '#FF6B6B' }}>▼{gap.volumeDown} this month</strong></p>
+            <p style={{ fontSize: 12, color: 'var(--webex-muted)' }}>Last shared meeting: {gap.lastMeeting}</p>
+            <p style={{ fontSize: 12, color: 'var(--webex-muted)' }}>Shared projects: {gap.projects}</p>
           </div>
-          <p style={{ fontSize: 12, color: '#A0A0A8', marginBottom: 12, lineHeight: 1.5 }}>
-            <strong style={{ color: '#E8F4F8' }}>Impact:</strong> {gap.impact}
+          <p style={{ fontSize: 12, color: 'var(--webex-muted)', marginBottom: 12, lineHeight: 1.5 }}>
+            <strong style={{ color: 'var(--webex-text)' }}>Impact:</strong> {gap.impact}
           </p>
           <div style={{ display: 'flex', gap: 8 }}>
             <button
@@ -675,8 +676,8 @@ function GapsTab({ onSuggestSync }) {
             </button>
             <button
               style={{
-                background: 'transparent', border: '1px solid #3A3A3C',
-                borderRadius: 8, padding: '6px 12px', fontSize: 12, color: '#8E8E93', cursor: 'pointer'
+                background: 'transparent', border: '1px solid var(--webex-border)',
+                borderRadius: 8, padding: '6px 12px', fontSize: 12, color: 'var(--webex-muted)', cursor: 'pointer'
               }}
             >
               View shared projects →
@@ -820,12 +821,12 @@ function AIRecCard({ rec, index, isActive, onApply, appliedIds }) {
               {rec.priority}
             </span>
           </div>
-          <p style={{ fontWeight: 700, fontSize: 13, color: '#E8F4F8', marginBottom: 8 }}>{rec.title}</p>
-          <p style={{ fontSize: 12, color: '#A0A0A8', lineHeight: 1.6, marginBottom: 8, minHeight: 40 }}>
+          <p style={{ fontWeight: 700, fontSize: 13, color: 'var(--webex-text)', marginBottom: 8 }}>{rec.title}</p>
+          <p style={{ fontSize: 12, color: 'var(--webex-muted)', lineHeight: 1.6, marginBottom: 8, minHeight: 40 }}>
             {isActive ? localDisplayed : rec.body}
             {isActive && !localDone && <span className="typewriter-cursor" />}
           </p>
-          <p style={{ fontSize: 11, color: '#8E8E93', marginBottom: 14 }}>
+          <p style={{ fontSize: 11, color: 'var(--webex-muted)', marginBottom: 14 }}>
             Estimated impact: <strong style={{ color: rec.priorityColor }}>{rec.impact}</strong>
           </p>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -842,8 +843,8 @@ function AIRecCard({ rec, index, isActive, onApply, appliedIds }) {
             <button
               onClick={() => onApply(rec)}
               style={{
-                background: 'transparent', border: '1px solid #3A3A3C',
-                borderRadius: 8, padding: '6px 12px', fontSize: 12, color: '#8E8E93', cursor: 'pointer'
+                background: 'transparent', border: '1px solid var(--webex-border)',
+                borderRadius: 8, padding: '6px 12px', fontSize: 12, color: 'var(--webex-muted)', cursor: 'pointer'
               }}
             >
               Dismiss
@@ -1002,11 +1003,11 @@ function KPITile({ item }) {
   return (
     <div style={{
       flex: '1 1 25%', display: 'flex', flexDirection: 'column', justifyContent: 'center',
-      alignItems: 'center', padding: '10px 12px', borderRight: '1px solid #2A2A2C',
+      alignItems: 'center', padding: '10px 12px', borderRight: '1px solid var(--webex-border)',
       minWidth: 0,
     }}>
-      <div style={{ fontSize: 22, fontWeight: 800, color: '#E8F4F8', lineHeight: 1 }}>{display}</div>
-      <div style={{ fontSize: 10, color: '#8E8E93', marginTop: 3, textAlign: 'center', marginBottom: 4, lineHeight: 1.3 }}>{item.label}</div>
+      <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--webex-text)', lineHeight: 1 }}>{display}</div>
+      <div style={{ fontSize: 10, color: 'var(--webex-muted)', marginTop: 3, textAlign: 'center', marginBottom: 4, lineHeight: 1.3 }}>{item.label}</div>
       <div style={{ fontSize: 11, fontWeight: 700, color: trendColor }}>{item.trend}</div>
     </div>
   );
@@ -1015,8 +1016,8 @@ function KPITile({ item }) {
 function KPIBar() {
   return (
     <div className="kpi-bar" style={{
-      display: 'flex', flexWrap: 'wrap', background: '#141416',
-      borderTop: '1px solid #2A2A2C', flexShrink: 0,
+      display: 'flex', flexWrap: 'wrap', background: 'var(--webex-navy)',
+      borderTop: '1px solid var(--webex-border)', flexShrink: 0,
     }}>
       {KPI_ITEMS.map((item, i) => (
         <KPITile key={i} item={item} />
@@ -1039,14 +1040,14 @@ function WorkgraphToast({ message, visible }) {
           transition={{ type: 'spring', stiffness: 300, damping: 28 }}
           style={{
             position: 'fixed', bottom: 100, left: '50%', transform: 'translateX(-50%)',
-            background: '#252528', border: '1px solid #3A3A3C',
+            background: 'var(--surface-5)', border: '1px solid var(--webex-border)',
             borderRadius: 16, padding: '12px 20px', zIndex: 500,
             display: 'flex', alignItems: 'center', gap: 10,
             boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
           }}
         >
           <CheckCircle size={17} style={{ color: '#07D87C', flexShrink: 0 }} />
-          <span style={{ fontSize: 13, fontWeight: 500, color: '#E8F4F8' }}>{message}</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--webex-text)' }}>{message}</span>
         </motion.div>
       )}
     </AnimatePresence>
@@ -1075,19 +1076,20 @@ function RightPanel({ onShowToast }) {
     }}>
       <div style={{ padding: '4px 16px 0', flexShrink: 0 }}>
         {/* Tabs */}
-        <div style={{
-          display: 'flex', gap: 2, background: '#141416',
+        <div className="wg-tab-container-inner" style={{
+          display: 'flex', gap: 2, background: 'var(--webex-navy)',
           borderRadius: 10, padding: 3, marginBottom: 12,
         }}>
           {TABS.map((tab, i) => (
             <button
               key={tab}
               onClick={() => handleTabClick(i)}
+              className={activeTab === i ? 'wg-tab-active' : 'wg-tab-inactive'}
               style={{
                 flex: 1, padding: '6px 4px', fontSize: 11, fontWeight: 600,
                 border: 'none', borderRadius: 8, cursor: 'pointer',
                 background: activeTab === i ? 'var(--wg-card-bg)' : 'transparent',
-                color: activeTab === i ? '#E8F4F8' : '#8E8E93',
+                color: activeTab === i ? 'var(--webex-text)' : 'var(--webex-muted)',
                 transition: 'all 0.2s',
               }}
             >
@@ -1118,9 +1120,9 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
       onClick={onClick}
       style={{
         padding: '6px 18px', borderRadius: 20, fontSize: 13, fontWeight: 500,
-        border: `1px solid ${active ? (color || '#00BCF0') : '#3A3A3C'}`,
+        border: `1px solid ${active ? (color || '#00BCF0') : 'var(--webex-border)'}`,
         background: active ? (color ? color + '22' : 'rgba(0,188,240,0.12)') : 'transparent',
-        color: active ? (color || '#00BCF0') : '#E8F4F8',
+        color: active ? (color || '#00BCF0') : 'var(--webex-text)',
         cursor: 'pointer', transition: 'all 0.15s',
         whiteSpace: 'nowrap', flexShrink: 0,
         minWidth: 90, textAlign: 'center'
@@ -1132,7 +1134,7 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
 
   return (
     <div className="wg-filter-bar" style={{
-      minHeight: 52, background: '#141416', borderBottom: '1px solid #2A2A2C',
+      minHeight: 52, background: 'var(--webex-navy)', borderBottom: '1px solid var(--webex-border)',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '8px 20px', flexShrink: 0, gap: 12, flexWrap: 'wrap',
     }}>
@@ -1141,7 +1143,7 @@ function TopFilterBar({ deptFilter, setDeptFilter, timeRange, setTimeRange }) {
           pill(dept, deptFilter === dept, () => setDeptFilter(dept),
             dept !== 'All' ? DEPT_COLORS[dept] : null)
         )}
-        <div style={{ width: 1, height: 20, background: '#3A3A3C', margin: '0 8px' }} />
+        <div style={{ width: 1, height: 20, background: 'var(--webex-border)', margin: '0 8px' }} />
         {TIME_RANGES.map(t =>
           pill(t, timeRange === t, () => setTimeRange(t), null)
         )}
@@ -1178,10 +1180,10 @@ export default function WorkgraphView() {
         background: 'var(--wg-bg)', overflow: 'hidden',
       }}
     >
-      <div className="wg-mobile-tabs" style={{ display: 'none', padding: '10px 20px', background: '#141416', borderBottom: '1px solid #2A2A2C', flexShrink: 0 }}>
-        <div style={{ display: 'flex', background: '#0D0D0D', borderRadius: 8, padding: 3, border: '1px solid #2A2A2C' }}>
-          <button onClick={() => setMobileTab('map')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 12, fontWeight: 600, background: mobileTab === 'map' ? '#252528' : 'transparent', color: mobileTab === 'map' ? '#E8F4F8' : '#8E8E93', border: 'none' }}>Workgraph Map</button>
-          <button onClick={() => setMobileTab('insights')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 12, fontWeight: 600, background: mobileTab === 'insights' ? '#252528' : 'transparent', color: mobileTab === 'insights' ? '#E8F4F8' : '#8E8E93', border: 'none' }}>Insights & Risks</button>
+      <div className="wg-mobile-tabs" style={{ display: 'none', padding: '10px 20px', background: 'var(--webex-navy)', borderBottom: '1px solid var(--webex-border)', flexShrink: 0 }}>
+        <div style={{ display: 'flex', background: 'var(--webex-bg)', borderRadius: 8, padding: 3, border: '1px solid var(--webex-border)' }}>
+          <button onClick={() => setMobileTab('map')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 12, fontWeight: 600, background: mobileTab === 'map' ? 'var(--surface-5)' : 'transparent', color: mobileTab === 'map' ? 'var(--webex-text)' : 'var(--webex-muted)', border: 'none' }}>Workgraph Map</button>
+          <button onClick={() => setMobileTab('insights')} style={{ flex: 1, padding: '6px 0', borderRadius: 6, fontSize: 12, fontWeight: 600, background: mobileTab === 'insights' ? 'var(--surface-5)' : 'transparent', color: mobileTab === 'insights' ? 'var(--webex-text)' : 'var(--webex-muted)', border: 'none' }}>Insights & Risks</button>
         </div>
       </div>
 
@@ -1261,8 +1263,8 @@ export default function WorkgraphView() {
           style={{
             width: '100%', height: 28, display: 'flex', alignItems: 'center',
             justifyContent: 'center', gap: 6,
-            background: '#141416', borderTop: '1px solid #2A2A2C',
-            border: 'none', cursor: 'pointer', color: '#8E8E93',
+            background: 'var(--webex-navy)', borderTop: '1px solid var(--webex-border)',
+            border: 'none', cursor: 'pointer', color: 'var(--webex-muted)',
             fontSize: 11, fontWeight: 600, letterSpacing: '0.05em',
           }}
         >

@@ -1,11 +1,11 @@
 import { useState, useRef } from 'react';
-import { Search, Bell, ChevronDown, X } from 'lucide-react';
+import { Search, Bell, ChevronDown, X, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useAppStore from '../../store/useAppStore';
 import Avatar from '../shared/Avatar';
 
 export default function TopBar() {
-  const { searchQuery, setSearchQuery, searchOpen, setSearchOpen } = useAppStore();
+  const { searchQuery, setSearchQuery, searchOpen, setSearchOpen, isDarkMode, toggleTheme } = useAppStore();
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const inputRef = useRef(null);
@@ -25,7 +25,7 @@ export default function TopBar() {
         <div
           className="flex items-center gap-2 rounded-xl transition-all duration-200"
           style={{
-            background: searchOpen ? 'rgba(0,188,240,0.08)' : 'rgba(255,255,255,0.05)',
+            background: searchOpen ? 'rgba(0,188,240,0.08)' : 'var(--topbar-search-bg)',
             border: searchOpen ? '1px solid rgba(0,188,240,0.4)' : '1px solid var(--webex-border)',
             padding: '0 12px',
             height: 36
@@ -78,7 +78,7 @@ export default function TopBar() {
                     key={s}
                     className="w-full text-left px-4 py-2.5 text-sm transition-colors duration-100"
                     style={{ color: 'var(--webex-text)', background: 'transparent', border: 'none', cursor: 'pointer' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--hover-overlay)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     # {s}
@@ -91,6 +91,29 @@ export default function TopBar() {
 
       {/* Right side actions - Far Right */}
       <div className="flex items-center gap-2">
+
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          aria-label="Toggle light/dark mode"
+          className="flex items-center justify-center rounded-xl transition-all duration-150"
+          style={{
+            width: 36, height: 36,
+            background: 'transparent',
+            border: 'none', cursor: 'pointer',
+            color: isDarkMode ? 'var(--webex-muted)' : 'var(--webex-blue)',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--hover-overlay)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+          title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          <Lightbulb
+            size={17}
+            fill={isDarkMode ? 'none' : 'currentColor'}
+            style={{ transition: 'fill 250ms ease, color 250ms ease' }}
+          />
+        </button>
+
         {/* Notifications */}
         <div className="relative">
           <button
@@ -101,7 +124,7 @@ export default function TopBar() {
               background: notifOpen ? 'rgba(0,188,240,0.12)' : 'transparent',
               color: 'var(--webex-muted)', border: 'none', cursor: 'pointer'
             }}
-            onMouseEnter={e => { if(!notifOpen) e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}
+            onMouseEnter={e => { if(!notifOpen) e.currentTarget.style.background = 'var(--hover-overlay)'; }}
             onMouseLeave={e => { if(!notifOpen) e.currentTarget.style.background = 'transparent'; }}
           >
             <Bell size={17} />
@@ -127,7 +150,7 @@ export default function TopBar() {
                   { text: 'Marcus: The API is ready on staging 🚀', time: '1h ago' }
                 ].map((n, i) => (
                   <div key={i} className="px-4 py-3 cursor-pointer" style={{ borderBottom: '1px solid var(--webex-border)' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--hover-overlay)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     <p className="text-sm mb-0.5" style={{ color: 'var(--webex-text)' }}>{n.text}</p>
@@ -149,7 +172,7 @@ export default function TopBar() {
               background: profileOpen ? 'rgba(0,188,240,0.12)' : 'transparent',
               border: 'none', cursor: 'pointer'
             }}
-            onMouseEnter={e => { if(!profileOpen) e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}
+            onMouseEnter={e => { if(!profileOpen) e.currentTarget.style.background = 'var(--hover-overlay)'; }}
             onMouseLeave={e => { if(!profileOpen) e.currentTarget.style.background = 'transparent'; }}
           >
             <Avatar userId="me" size={28} showPresence={false} />
@@ -178,7 +201,7 @@ export default function TopBar() {
                 {['My Profile', 'Account Settings', 'Keyboard Shortcuts', 'Sign Out'].map(item => (
                   <button key={item} className="w-full text-left px-4 py-2.5 text-sm"
                     style={{ color: item === 'Sign Out' ? 'var(--webex-red)' : 'var(--webex-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--hover-overlay)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     {item}

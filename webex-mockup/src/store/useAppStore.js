@@ -2,6 +2,17 @@ import { create } from 'zustand';
 import { mockSpaces } from '../data/mockSpaces';
 import { mockMessages } from '../data/mockMessages';
 
+// Read persisted theme; default to dark
+const savedTheme = localStorage.getItem('webex-theme');
+const initialDark = savedTheme ? savedTheme === 'dark' : true;
+
+// Apply to DOM immediately to avoid flash
+if (!initialDark) {
+  document.documentElement.setAttribute('data-theme', 'light');
+} else {
+  document.documentElement.removeAttribute('data-theme');
+}
+
 const useAppStore = create((set, get) => ({
   // Messaging
   activeSpaceId: 'space-1',
@@ -46,6 +57,20 @@ const useAppStore = create((set, get) => ({
         )
       }
     }));
+  },
+
+  // Theme
+  isDarkMode: initialDark,
+  toggleTheme: () => {
+    const next = !get().isDarkMode;
+    if (next) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('webex-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('webex-theme', 'light');
+    }
+    set({ isDarkMode: next });
   },
 
   // Meetings / In-Call

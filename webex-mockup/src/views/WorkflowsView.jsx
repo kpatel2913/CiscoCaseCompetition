@@ -59,8 +59,8 @@ function ActivationModal({ pack, onClose, onComplete }) {
               <span className={`industry-badge industry-badge--${pack.industry} mb-2 inline-block`}>
                 {pack.industryLabel}
               </span>
-              <h2 className="text-xl font-bold text-white">Activating {pack.name}</h2>
-              <p className="text-sm text-gray-400 mt-1">This usually takes about {pack.estimatedSetupMin} minutes...</p>
+              <h2 className="text-xl font-bold" style={{ color: 'var(--webex-text)' }}>Activating {pack.name}</h2>
+              <p className="text-sm mt-1" style={{ color: 'var(--webex-muted)' }}>This usually takes about {pack.estimatedSetupMin} minutes...</p>
             </div>
 
             <div className="activation-steps mb-6">
@@ -70,7 +70,7 @@ function ActivationModal({ pack, onClose, onComplete }) {
                 return (
                   <div key={step.id} className={`activation-step ${stepDone ? 'done' : ''} ${isActive ? 'active' : ''}`}>
                     <div className="step-icon">
-                      {stepDone ? <Check size={14} /> : isActive ? <Spinner /> : <div className="w-2 h-2 rounded-full bg-gray-600" />}
+                      {stepDone ? <Check size={14} /> : isActive ? <Spinner /> : <div className="w-2 h-2 rounded-full" style={{ background: 'var(--webex-border)' }} />}
                     </div>
                     <span className="step-label">{step.label}</span>
                     {stepDone && <span className="step-time">{(step.duration / 1000).toFixed(1)}s</span>}
@@ -97,8 +97,8 @@ function ActivationModal({ pack, onClose, onComplete }) {
             >
               🎉
             </motion.div>
-            <h2 className="text-xl font-bold text-white mb-2">{pack.name} is live!</h2>
-            <p className="text-sm text-gray-400 mb-6">{pack.workflowCount} workflows are now active in your workspace.</p>
+            <h2 className="text-xl font-bold mb-2" style={{ color: 'var(--webex-text)' }}>{pack.name} is live!</h2>
+            <p className="text-sm mb-6" style={{ color: 'var(--webex-muted)' }}>{pack.workflowCount} workflows are now active in your workspace.</p>
 
             <div className="success-stats">
               <div className="success-stat">
@@ -146,34 +146,34 @@ function WorkflowPreviewModal({ pack, onClose }) {
       >
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-xl font-bold text-white">{pack.name}</h2>
-            <p className="text-sm text-gray-400">Included workflows & automation</p>
+            <h2 className="text-xl font-bold" style={{ color: 'var(--webex-text)' }}>{pack.name}</h2>
+            <p className="text-sm" style={{ color: 'var(--webex-muted)' }}>Included workflows & automation</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-gray-400">
+          <button onClick={onClose} className="p-2 rounded-full" style={{ color: 'var(--webex-muted)', background: 'var(--hover-overlay)' }}>
             <X size={20} />
           </button>
         </div>
 
         <div className="flex flex-col gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
           {workflows.map(wf => (
-            <div key={wf.id} className="p-4 bg-white/5 border border-white/10 rounded-xl hover:border-white/20 transition-all">
+            <div key={wf.id} className="p-4 rounded-xl transition-all" style={{ background: 'var(--surface-card)', border: '1px solid var(--webex-border)' }}>
               <div className="flex justify-between items-start mb-2">
-                <h4 className="font-semibold text-white text-sm">{wf.name}</h4>
+                <h4 className="font-semibold text-sm" style={{ color: 'var(--webex-text)' }}>{wf.name}</h4>
                 <div className={`w-8 h-4 rounded-full relative transition-colors ${wf.enabled ? 'bg-teal-500' : 'bg-gray-700'}`}>
                   <div className={`absolute top-1 w-2 h-2 rounded-full bg-white transition-all ${wf.enabled ? 'left-5' : 'left-1'}`} />
                 </div>
               </div>
               <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
-                <span className="text-gray-500">Trigger:</span>
-                <span className="text-gray-300">{wf.trigger}</span>
-                <span className="text-gray-500">Action:</span>
-                <span className="text-gray-300">{wf.action}</span>
+                <span style={{ color: 'var(--webex-muted)' }}>Trigger:</span>
+                <span style={{ color: 'var(--webex-text)' }}>{wf.trigger}</span>
+                <span style={{ color: 'var(--webex-muted)' }}>Action:</span>
+                <span style={{ color: 'var(--webex-text)' }}>{wf.action}</span>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-6 pt-4 border-t border-white/10 flex justify-end">
+        <div className="mt-6 pt-4 flex justify-end" style={{ borderTop: '1px solid var(--webex-border)' }}>
           <button className="btn-activate" onClick={onClose}>Done</button>
         </div>
       </motion.div>
@@ -292,23 +292,23 @@ export default function WorkflowsView() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-black overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden" style={{ background: 'var(--webex-navy)' }}>
       {/* Page Header */}
-      <header className="workflows-header px-8 py-6 border-b border-[var(--webex-border)] bg-[#0D0D0D] flex justify-between items-center shrink-0">
+      <header className="workflows-header px-8 py-6 border-b shrink-0 flex justify-between items-center" style={{ background: 'var(--surface-card-alt)', borderColor: 'var(--webex-border)' }}>
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Embedded Workflows</h1>
-          <p className="text-sm text-gray-400">Industry-ready automation. No IT team required.</p>
+          <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--webex-text)' }}>Embedded Workflows</h1>
+          <p className="text-sm" style={{ color: 'var(--webex-muted)' }}>Industry-ready automation. No IT team required.</p>
           
           <div className="flex gap-4 mt-4 workflows-stats">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#121212] border border-[var(--webex-border)] rounded-full text-[11px] text-gray-300">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px]" style={{ background: 'var(--surface-card)', border: '1px solid var(--webex-border)', color: 'var(--webex-muted)' }}>
               <Clock size={12} className="text-teal-500" />
               <span>Avg activation: 12 min</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#121212] border border-[var(--webex-border)] rounded-full text-[11px] text-gray-300">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px]" style={{ background: 'var(--surface-card)', border: '1px solid var(--webex-border)', color: 'var(--webex-muted)' }}>
               <Package size={12} className="text-teal-500" />
               <span>{WORKFLOW_PACKS.length} packs available</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#121212] border border-[var(--webex-border)] rounded-full text-[11px] text-gray-300">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px]" style={{ background: 'var(--surface-card)', border: '1px solid var(--webex-border)', color: 'var(--webex-muted)' }}>
               <Zap size={12} className="text-teal-500" />
               <span>Save 6 months of IT work</span>
             </div>
@@ -322,14 +322,15 @@ export default function WorkflowsView() {
             placeholder="Search packs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-[280px] bg-[#121212] border border-[var(--webex-border)] rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-teal-500 transition-colors"
+            className="w-[280px] rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-teal-500 transition-colors"
+            style={{ background: 'var(--surface-card)', border: '1px solid var(--webex-border)', color: 'var(--webex-text)' }}
           />
         </div>
       </header>
 
       <div className="workflows-layout flex flex-1 overflow-hidden">
         {/* Left Sidebar */}
-        <aside className="industry-sidebar w-[180px] border-r border-[var(--webex-border)] bg-[#0D0D0D] p-4 flex flex-col gap-6 shrink-0">
+        <aside className="industry-sidebar w-[180px] border-r p-4 flex flex-col gap-6 shrink-0" style={{ background: 'var(--surface-card-alt)', borderColor: 'var(--webex-border)' }}>
           <div>
             <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">Industries</h4>
             <div className="flex flex-col gap-1">
@@ -350,10 +351,12 @@ export default function WorkflowsView() {
                         placeholder="Search..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-[#1A1A1A] border border-teal-500/30 rounded-full py-1.5 pl-3 pr-8 text-[12px] text-white focus:outline-none focus:border-teal-500"
+                        className="w-full border border-teal-500/30 rounded-full py-1.5 pl-3 pr-8 text-[12px] focus:outline-none focus:border-teal-500"
+                        style={{ background: 'var(--surface-card)', color: 'var(--webex-text)' }}
                       />
                       <button 
-                        className="absolute right-2 text-gray-500 hover:text-white"
+                        className="absolute right-2"
+                        style={{ color: 'var(--webex-muted)' }}
                         onClick={() => {
                           setSearchQuery('');
                           setIsSearchExpanded(false);
@@ -397,23 +400,23 @@ export default function WorkflowsView() {
             </div>
           </div>
 
-          <div className="pt-6 border-t border-white/5">
-            <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">Your Packs</h4>
+          <div className="pt-6 border-t" style={{ borderColor: 'var(--webex-border)' }}>
+            <h4 className="text-[10px] font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--webex-muted)' }}>Your Packs</h4>
             <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2 text-xs text-white">
+              <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--webex-text)' }}>
                 <div className="w-1.5 h-1.5 rounded-full bg-teal-500 shadow-[0_0_8px_rgba(7,216,124,0.5)]" />
                 <span>{activePacks.length} Active</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <div className="w-1.5 h-1.5 rounded-full bg-gray-700" />
+              <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--webex-muted)' }}>
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--webex-border)' }} />
                 <span>{WORKFLOW_PACKS.length - activePacks.length} Available</span>
               </div>
             </div>
           </div>
 
-          <div className="pt-6 border-t border-white/5">
-            <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">Coming soon</h4>
-            <div className="flex flex-col gap-2 font-italic text-[11px] text-gray-600 px-3">
+          <div className="pt-6 border-t" style={{ borderColor: 'var(--webex-border)' }}>
+            <h4 className="text-[10px] font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--webex-muted)' }}>Coming soon</h4>
+            <div className="flex flex-col gap-2 font-italic text-[11px] px-3" style={{ color: 'var(--webex-muted)' }}>
               <p>Retail</p>
               <p>Education</p>
               <p>Manufacturing</p>
@@ -422,7 +425,7 @@ export default function WorkflowsView() {
         </aside>
 
         {/* Main Content Scroll Area */}
-        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-black">
+        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar" style={{ background: 'var(--webex-navy)' }}>
           <div className="max-w-5xl mx-auto">
             <AnimatePresence mode="popLayout">
               <motion.div 

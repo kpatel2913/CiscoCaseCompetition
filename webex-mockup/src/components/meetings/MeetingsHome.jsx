@@ -3,15 +3,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Info, X, Video, ArrowRight, CalendarPlus, ChevronDown, ChevronLeft, ChevronRight, Clock, CheckSquare, Loader } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
 
-const WX_COLORS = {
-  bg: '#1C1C1E',
-  surface: '#2C2C2E',
-  border: '#3A3A3C',
-  text: '#FFFFFF',
-  muted: '#8E8E93',
-  green: '#07D87C',
-  cyan: '#00BCF0',
-};
+// Use a getter so colors always reflect the current theme (CSS variables)
+function getWXColors() {
+  const s = getComputedStyle(document.documentElement);
+  return {
+    bg:      s.getPropertyValue('--webex-navy').trim()      || '#1C1C1E',
+    surface: s.getPropertyValue('--surface-5').trim()       || '#2C2C2E',
+    border:  s.getPropertyValue('--border-2').trim()        || '#3A3A3C',
+    text:    s.getPropertyValue('--webex-text').trim()       || '#FFFFFF',
+    muted:   s.getPropertyValue('--webex-muted').trim()     || '#8E8E93',
+    green:   s.getPropertyValue('--webex-green').trim()     || '#07D87C',
+    cyan:    s.getPropertyValue('--webex-blue').trim()      || '#00BCF0',
+  };
+}
+
 
 function TrafficLights() {
   return (
@@ -43,7 +48,10 @@ function DinoIllustration() {
 }
 
 export default function MeetingsHome() {
-  const { setPreJoinModalOpen, setJoinModalOpen, setActiveView, recapMeetingId } = useAppStore();
+  const WX_COLORS = getWXColors();
+  // Subscribe to isDarkMode so the component re-renders when theme changes
+  // eslint-disable-next-line no-unused-vars
+  const { setPreJoinModalOpen, setJoinModalOpen, setActiveView, recapMeetingId, isDarkMode } = useAppStore();
   const [copied, setCopied] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [activeTab, setActiveTab] = useState('calendar');
@@ -315,6 +323,9 @@ export default function MeetingsHome() {
 }
 
 function RecapCard({ recap, onView }) {
+  // eslint-disable-next-line no-unused-vars
+  const { isDarkMode } = useAppStore();
+  const WX_COLORS = getWXColors();
   const durationMin = recap.durationMs ? Math.floor(recap.durationMs / 60000) : null;
   const date = recap.startedAt
     ? new Date(recap.startedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })

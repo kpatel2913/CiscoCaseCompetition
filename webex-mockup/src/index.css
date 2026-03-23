@@ -3,16 +3,40 @@
 @tailwind utilities;
 
 :root {
-  --webex-blue:       #00BCF0;
-  --webex-dark-blue:  #141414;
-  --webex-navy:       #000000;
-  --webex-surface:    #0A0A0A;
-  --webex-border:     #1F1F1F;
-  --webex-text:       #FFFFFF;
-  --webex-muted:      #8E8E93;
-  --webex-green:      #3FD47A;
-  --webex-red:        #FF4F4F;
-  --webex-yellow:     #FFD166;
+  --webex-blue:           #00BCF0;
+  --webex-dark-blue:      #141414;
+  --webex-navy:           #000000;
+  --webex-surface:        #0A0A0A;
+  --webex-border:         #1F1F1F;
+  --webex-text:           #FFFFFF;
+  --webex-muted:          #8E8E93;
+  --webex-green:          #3FD47A;
+  --webex-red:            #FF4F4F;
+  --webex-yellow:         #FFD166;
+
+  /* Component surface tokens (dark defaults) */
+  --surface-2:            #141414;
+  --surface-3:            #1E1E20;
+  --surface-4:            #252528;
+  --surface-5:            #2C2C2E;
+  --surface-modal:        #1E1E20;
+  --surface-card:         #121212;
+  --surface-card-alt:     #0D0D0D;
+  --surface-tooltip:      #252528;
+  --surface-toast:        #2C2C2E;
+  --border-2:             #3A3A3C;
+  --border-3:             #2A2A2C;
+  --text-dim:             #C7C7CC;
+  --text-dimmer:          #A0A0A8;
+  --text-faint:           #636366;
+  --hover-overlay:        rgba(255,255,255,0.07);
+  --topbar-search-bg:     rgba(255,255,255,0.05);
+
+  /* Briefing tokens */
+  --br-ai-bg:    #000000;
+  --br-ai-diff-bg: #1A2A1A;
+  --br-ai-chip-bg: rgba(0,188,240,0.1);
+  --br-ai-chip-border: rgba(0,188,240,0.25);
 
   --text-xs:   11px;
   --text-sm:   13px;
@@ -26,6 +50,18 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  transition:
+    background-color 250ms ease,
+    color 250ms ease,
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+/* Exclude transitions on animations/transforms to avoid jank */
+*,
+*::before,
+*::after {
+  transition-property: background-color, color, border-color, box-shadow;
 }
 
 html, body, #root {
@@ -1700,3 +1736,709 @@ to   { transform: translateY(0); }
   0%, 100% { box-shadow: 0 0 0 0px rgba(255, 68, 68, 0.3); }
   50%       { box-shadow: 0 0 0 8px rgba(255, 68, 68, 0.0); }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT MODE OVERRIDES  (data-theme="light" on <html>)
+═══════════════════════════════════════════════════════════ */
+
+[data-theme="light"] {
+  /* ── Core palette ── */
+  --webex-dark-blue:      #E8E8E8;
+  --webex-navy:           #FFFFFF;
+  --webex-surface:        #F5F5F5;
+  --webex-border:         #E0E0E0;
+  --webex-text:           #111111;
+  --webex-muted:          #555555;
+
+  /* ── Component surface tokens ── */
+  --surface-2:            #EBEBEB;
+  --surface-3:            #FFFFFF;
+  --surface-4:            #F0F0F0;
+  --surface-5:            #FFFFFF;
+  --surface-modal:        #FFFFFF;
+  --surface-card:         #FAFAFA;
+  --surface-card-alt:     #F5F5F5;
+  --surface-tooltip:      #FFFFFF;
+  --surface-toast:        #FFFFFF;
+  --border-2:             #CCCCCC;
+  --border-3:             #D8D8D8;
+  --text-dim:             #333333;
+  --text-dimmer:          #555555;
+  --text-faint:           #888888;
+
+  /* ── Interaction overlays ── */
+  --hover-overlay:        rgba(0,0,0,0.05);
+  --topbar-search-bg:     rgba(0,0,0,0.04);
+
+  /* ── Workgraph tokens ── */
+  --wg-bg:           #F5F5F5;
+  --wg-panel-bg:     #FAFAFA;
+  --wg-card-bg:      #FFFFFF;
+  --wg-link-color:   #CCCCCC;
+
+  /* ── Briefing tokens ── */
+  --br-ai-bg:    #FFFFFF;
+  --br-ai-diff-bg: #E8F7EE;
+  --br-ai-chip-bg: #F0F0F0;
+  --br-ai-chip-border: #D0D0D0;
+  --br-card-bg:  #FAFAFA;
+
+  /* ── Workflow pack tokens ── */
+  --wp-bg:           #FFFFFF;
+  --wp-card-bg:      #FAFAFA;
+  --wp-border:       #E0E0E0;
+  --wp-active-bg:    #F0F0F0;
+}
+
+/* ── Body & shell ── */
+[data-theme="light"] body { background: #FFFFFF; color: #111111; }
+[data-theme="light"] .app-shell  { background: #FFFFFF; }
+[data-theme="light"] .main-content { background: #FFFFFF; }
+
+/* ── Glass util ── */
+[data-theme="light"] .glass {
+  background: rgba(255,255,255,0.85);
+  border-color: #E0E0E0;
+}
+
+/* ── Scrollbar ── */
+[data-theme="light"] .is-scrolling::-webkit-scrollbar-thumb,
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #D0D0D0;
+}
+
+/* ── Workgraph SVG ── */
+[data-theme="light"] .workgraph-svg {
+  background:
+    radial-gradient(ellipse at 40% 50%, rgba(0,0,0,0.02) 0%, transparent 70%),
+    radial-gradient(ellipse at 70% 30%, rgba(0,0,0,0.02) 0%, transparent 60%),
+    #F5F5F5;
+}
+
+/* ── Tooltip ── */
+[data-theme="light"] .graph-tooltip {
+  background: #FFFFFF;
+  border-color: #E0E0E0;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+/* ── Recommendation cards ── */
+[data-theme="light"] .recommendation-card {
+  border-color: #E0E0E0;
+}
+[data-theme="light"] .recommendation-card--featured {
+  background: linear-gradient(135deg, #FFF5F5 0%, #FAFAFA 100%);
+}
+[data-theme="light"] .rec-metric {
+  background: #F0F0F0;
+}
+[data-theme="light"] .rec-timeline {
+  background: #F0F0F0;
+}
+[data-theme="light"] .rec-timeline-day { color: #888888; }
+[data-theme="light"] .rec-exhaustion {
+  background: rgba(255,107,107,0.04);
+}
+[data-theme="light"] .exhaustion-team { color: #111111; }
+[data-theme="light"] .exhaustion-signal { color: #555555; }
+[data-theme="light"] .rec-impact-callout { color: #333333; }
+[data-theme="light"] .rec-suggestion {
+  background: #F0F0F0;
+  color: #333333;
+}
+[data-theme="light"] .btn-dismiss-rec {
+  border-color: #D0D0D0;
+  color: #555555;
+}
+[data-theme="light"] .btn-dismiss-rec:hover { border-color: #BBBBBB; }
+[data-theme="light"] .rec-title { color: #111111; }
+[data-theme="light"] .rec-body  { color: #444444; }
+[data-theme="light"] .rec-tag   { color: #666666; }
+
+/* ── Scenario card ── */
+[data-theme="light"] .scenario-upload-btn {
+  background: #F0F0F0;
+  border-color: #D0D0D0;
+  color: #555555;
+}
+[data-theme="light"] .scenario-upload-btn:hover {
+  border-color: #00BCF0;
+  color: #00BCF0;
+}
+[data-theme="light"] .scenario-preview-content {
+  color: #555555;
+}
+
+/* ── Chat bubbles ── */
+[data-theme="light"] .chat-message-assistant {
+  background: #EBEBEB;
+  color: #111111;
+}
+[data-theme="light"] .chat-message-user {
+  background: rgba(0,188,240,0.10);
+  border-color: rgba(0,188,240,0.25);
+}
+
+/* ── Suggestion chips ── */
+[data-theme="light"] .suggestion-chip {
+  background: #F0F0F0;
+  border-color: #D8D8D8;
+  color: #333333;
+}
+[data-theme="light"] .suggestion-chip:hover {
+  border-color: #00BCF0;
+  color: #00BCF0;
+}
+
+/* ── Typing indicator ── */
+[data-theme="light"] .typing-indicator span { background: #AAAAAA; }
+
+/* ── Range slider ── */
+[data-theme="light"] input[type="range"].progress-slider { background: #CCCCCC; }
+
+/* ── Pack / workflow cards ── */
+[data-theme="light"] .pack-card {
+  background: #FAFAFA;
+  border-color: #E0E0E0;
+}
+[data-theme="light"] .pack-card:hover {
+  border-color: #BBBBBB;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+[data-theme="light"] .pack-card--active {
+  border-color: rgba(7,216,124,0.5);
+}
+[data-theme="light"] .pack-name        { color: #111111; }
+[data-theme="light"] .pack-description { color: #555555; }
+[data-theme="light"] .pack-meta        { color: #777777; }
+[data-theme="light"] .pack-tag {
+  background: #EEEEEE;
+  border-color: #D8D8D8;
+  color: #555555;
+}
+[data-theme="light"] .integration-chip {
+  background: rgba(0,0,0,0.05);
+  color: #333333;
+}
+[data-theme="light"] .integrations-label { color: #888888; }
+
+[data-theme="light"] .btn-preview {
+  border-color: #D0D0D0;
+  color: #555555;
+}
+[data-theme="light"] .btn-preview:hover {
+  border-color: #AAAAAA;
+  color: #111111;
+}
+[data-theme="light"] .btn-apply-rec {
+  background: rgba(7,216,124,0.10);
+}
+
+/* ── Activation modal ── */
+[data-theme="light"] .modal-overlay   { background: rgba(0,0,0,0.35); }
+[data-theme="light"] .activation-modal {
+  background: #FFFFFF;
+  border-color: #E0E0E0;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.15);
+}
+[data-theme="light"] .activation-step.active { background: rgba(0,0,0,0.03); }
+[data-theme="light"] .step-label { color: #333333; }
+[data-theme="light"] .step-time  { color: #888888; }
+[data-theme="light"] .activation-progress-bar { background: #E0E0E0; }
+[data-theme="light"] .success-stats {
+  background: #F0F0F0;
+}
+[data-theme="light"] .stat-label { color: #555555; }
+
+/* ── Comparison table ── */
+[data-theme="light"] .comparison-container {
+  border-color: #E0E0E0;
+  background: #FAFAFA;
+}
+[data-theme="light"] .comparison-table th {
+  background: #F0F0F0;
+  color: #555555;
+  border-bottom-color: #E0E0E0;
+}
+[data-theme="light"] .comparison-table td {
+  border-bottom-color: #EEEEEE;
+  color: #333333;
+}
+[data-theme="light"] .col-webex {
+  background: rgba(7,216,124,0.04);
+  color: #111111 !important;
+}
+
+/* ── AI Chat drawer & FAB ── */
+[data-theme="light"] .ai-chat-drawer {
+  box-shadow: 0 24px 80px rgba(0,0,0,0.15);
+}
+
+/* ── Workflow dashboard ── */
+[data-theme="light"] .workflow-card {
+  background: #FAFAFA;
+  border-color: #E0E0E0;
+}
+[data-theme="light"] .workflow-card-header { color: #111111; }
+[data-theme="light"] .workflow-name        { color: #111111; }
+[data-theme="light"] .workflow-runs        { color: #777777; }
+[data-theme="light"] .workflow-label       { color: #888888; }
+[data-theme="light"] .workflow-value       { color: #333333; }
+[data-theme="light"] .workflow-last-run {
+  color: #888888;
+  border-top-color: #E0E0E0;
+}
+
+/* ── Toast ── */
+[data-theme="light"] .webex-toast {
+  background: #FFFFFF;
+  border-color: #E0E0E0;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+}
+[data-theme="light"] .toast-sender { color: #111111; }
+[data-theme="light"] .toast-space  { color: #555555; }
+[data-theme="light"] .toast-close  { color: #888888; }
+[data-theme="light"] .toast-body   { color: #333333; }
+[data-theme="light"] .toast-avatar {
+  background: #E0E0E0;
+}
+
+/* ── Voice button ── */
+[data-theme="light"] .voice-btn {
+  border-color: #D0D0D0;
+  background: #F0F0F0;
+  color: #555555;
+}
+
+/* ── Sidebar mobile bottom border ── */
+@media (max-width: 768px) {
+  [data-theme="light"] .sidebar {
+    border-top-color: #E0E0E0!important;
+  }
+  [data-theme="light"] .kpi-bar > div {
+    border-bottom-color: #E0E0E0 !important;
+  }
+}
+
+/* ── WorkgraphView element overrides (inline-style bypass) ── */
+[data-theme="light"] .wg-filter-bar {
+  background: #EBEBEB !important;
+  border-bottom-color: #E0E0E0 !important;
+}
+
+[data-theme="light"] .kpi-bar {
+  background: #EBEBEB !important;
+  border-bottom-color: #E0E0E0 !important;
+}
+
+[data-theme="light"] .kpi-bar > div {
+  border-right-color: #E0E0E0 !important;
+  border-bottom-color: #E0E0E0 !important;
+}
+
+[data-theme="light"] .wg-right-panel {
+  background: #FAFAFA !important;
+  border-left-color: #E0E0E0 !important;
+}
+
+[data-theme="light"] .wg-right-panel-inner {
+  background: #FAFAFA !important;
+  border-left-color: #E0E0E0 !important;
+}
+
+/* ── Right panel card content: override ALL inline text colors ── */
+/* Primary text (#E8F4F8 in dark → dark in light) */
+[data-theme="light"] .wg-right-panel-inner span[style*="color: '#E8F4F8'"],
+[data-theme="light"] .wg-right-panel-inner div[style*="color: '#E8F4F8'"],
+[data-theme="light"] .wg-right-panel-inner p[style*="color: '#E8F4F8'"] {
+  color: #111111 !important;
+}
+/* Body text (#C0C0C8) */
+[data-theme="light"] .wg-right-panel-inner span[style*="color: '#C0C0C8'"],
+[data-theme="light"] .wg-right-panel-inner div[style*="color: '#C0C0C8'"],
+[data-theme="light"] .wg-right-panel-inner p[style*="color: '#C0C0C8'"] {
+  color: #333333 !important;
+}
+/* Muted (#8E8E93) */
+[data-theme="light"] .wg-right-panel-inner span[style*="color: '#8E8E93'"],
+[data-theme="light"] .wg-right-panel-inner div[style*="color: '#8E8E93'"],
+[data-theme="light"] .wg-right-panel-inner p[style*="color: '#8E8E93'"] {
+  color: #666666 !important;
+}
+
+/* Card tiles inside right panel (use var(--wg-card-bg) = dark in dark mode) */
+[data-theme="light"] .wg-right-panel-inner > div > div[style*="background: 'var(--wg-card-bg)'"],
+[data-theme="light"] .wg-right-panel-inner > div > div { background: #FFFFFF !important; }
+
+/* Team health / gaps cards that have --wg-card-bg inline */
+[data-theme="light"] .wg-right-panel-inner div[style*="border-radius: 12"],
+[data-theme="light"] .wg-right-panel-inner div[style*="borderRadius: 12"] {
+  background: #F8F8F8 !important;
+  border-color: #E4E4E4 !important;
+}
+
+/* Severity bar track (#var(--webex-border) renders correctly, but the track bg needs light) */
+[data-theme="light"] .wg-right-panel-inner div[style*="height: 4px"][style*="background: 'var(--webex-border)'"],
+[data-theme="light"] .wg-right-panel-inner div[style*="height: 4"] {
+  background: #E0E0E0 !important;
+}
+
+/* Privacy banner text in right panel */
+[data-theme="light"] .wg-right-panel-inner p[style*="color: '#8E8E93'"] { color: #666666 !important; }
+
+
+[data-theme="light"] .wg-mobile-tabs {
+  background: #EBEBEB !important;
+  border-bottom-color: #E0E0E0 !important;
+}
+
+/* Node detail panel in workgraph (absolute positioned, dark bg) */
+[data-theme="light"] .wg-graph > div[style*="position: 'absolute'"],
+[data-theme="light"] .wg-graph > div > div[style*="background: '#1C1C1E'"],
+[data-theme="light"] .wg-graph > div > div[style*="background: '#0D0D0D'"],
+[data-theme="light"] .wg-graph > div > div[style*="background: '#121212'"],
+[data-theme="light"] .wg-graph > div > div[style*="background: '#141416'"] {
+  background: #FAFAFA !important;
+  border-color: #E0E0E0 !important;
+  color: #111111 !important;
+}
+
+/* Filter pill buttons */
+[data-theme="light"] .wg-filter-pills button[style*="#3A3A3C"],
+[data-theme="light"] .wg-filter-pills button {
+  border-color: #D0D0D0 !important;
+  color: #333333 !important;
+}
+
+/* MeetingsHome button hover overlays */
+[data-theme="light"] .meetings-cta-row button:hover {
+  background: rgba(0,0,0,0.04) !important;
+}
+
+/* ── WorkgraphView: KPI Bar (inline #141416 bg) ── */
+[data-theme="light"] .kpi-bar > div {
+  border-right-color: #E0E0E0 !important;
+}
+
+/* ── WorkgraphView: RightPanel tab bar (#141416) ── */
+[data-theme="light"] .wg-right-panel-inner > div > div[style*="background: '#141416'"],
+[data-theme="light"] .wg-right-panel-inner > div > div {
+  background: #EBEBEB;
+}
+
+/* ── WorkgraphView: "Reset zoom" button in map ── */
+[data-theme="light"] .wg-graph button[style*="rgba(0,0,0,0.7)"] {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: #D0D0D0 !important;
+  color: #333333 !important;
+}
+
+/* ── WorkgraphView: GraphLegend ── */
+[data-theme="light"] .wg-graph > div > div[style*="background: 'rgba(0,0,0"] {
+  background: rgba(255,255,255,0.92) !important;
+  border-color: #E0E0E0 !important;
+  color: #111111 !important;
+}
+
+/* ── WorkgraphView: SuggestSync modal inner box ── */
+[data-theme="light"] .modal-overlay > div > div[style*="background: '#0D0D0D'"],
+[data-theme="light"] .modal-overlay > div[style*="background: 'rgba(0,0,0,0.6)'"] > div {
+  background: #FFFFFF !important;
+  border-color: #E0E0E0 !important;
+  color: #111111 !important;
+}
+
+/* ── WorkgraphView: WorkgraphToast ── */
+[data-theme="light"] div[style*="#252528"][style*="#3A3A3C"] {
+  background: #FFFFFF !important;
+  border-color: #E0E0E0 !important;
+  color: #111111 !important;
+}
+
+/* ── WorkgraphView: Right panel text color overrides ── */
+/* Headings (#E8F4F8) */
+[data-theme="light"] .wg-right-panel-inner span[style*="color: '#E8F4F8'"],
+[data-theme="light"] .wg-right-panel-inner p[style*="color: '#E8F4F8'"],
+[data-theme="light"] .wg-right-panel-inner div[style*="color: '#E8F4F8'"] {
+  color: #111111 !important;
+}
+/* Secondary text (#C0C0C8, #A0A0A8) */
+[data-theme="light"] .wg-right-panel-inner span[style*="color: '#C0C0C8'"],
+[data-theme="light"] .wg-right-panel-inner p[style*="color: '#C0C0C8'"],
+[data-theme="light"] .wg-right-panel-inner span[style*="color: '#A0A0A8'"],
+[data-theme="light"] .wg-right-panel-inner p[style*="color: '#A0A0A8'"] {
+  color: #444444 !important;
+}
+/* Muted text (#8E8E93) within workgraph panel */
+[data-theme="light"] .wg-right-panel-inner p[style*="color: '#8E8E93'"],
+[data-theme="light"] .wg-right-panel-inner span[style*="color: '#8E8E93'"],
+[data-theme="light"] .wg-right-panel-inner div[style*="color: '#8E8E93'"] {
+  color: #666666 !important;
+}
+/* Card tiles inside wg-right-panel */
+[data-theme="light"] .wg-right-panel-inner > div > div > div[style*="overflowY: 'auto'"] > div {
+  background: #FAFAFA;
+  border-color: #E0E0E0;
+}
+
+/* ── WorkgraphView: filter pill active state ── */
+[data-theme="light"] .wg-filter-pills button[style*="background: 'rgba(0,188,240"] {
+  background: rgba(0,188,240,0.10) !important;
+}
+
+/* ── Workflows industry sidebar ── */
+[data-theme="light"] .industry-sidebar {
+  background: #F5F5F5 !important;
+  border-right-color: #E0E0E0 !important;
+  border-bottom-color: #E0E0E0 !important;
+}
+[data-theme="light"] .industry-sidebar button {
+  color: #444444 !important;
+  border-left-color: transparent !important;
+}
+[data-theme="light"] .industry-sidebar button[style*="borderLeft"],
+[data-theme="light"] .industry-sidebar button.active {
+  background: rgba(0,188,240,0.08) !important;
+  color: #00BCF0 !important;
+}
+
+/* ── WorkflowsView header, layout ── */
+[data-theme="light"] .workflows-layout {
+  background: #F5F5F5;
+}
+[data-theme="light"] .workflows-header {
+  background: #F5F5F5;
+}
+[data-theme="light"] .industry-filter-item {
+  color: #444444 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT MODE – WORKGRAPH TAB SWITCHER (clear active indicator)
+   ═══════════════════════════════════════════════════════════ */
+
+/* Container pill strip – override all divs inside the tab header area */
+[data-theme="light"] .wg-right-panel-inner div[style*="display: flex"][style*="borderRadius: 10"] {
+  background: #E0E0E0 !important;
+}
+
+/* Every tab button – default state: muted grey text */
+[data-theme="light"] .wg-tab-inactive {
+  color: #666666 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Active tab – white pill with shadow and dark text */
+[data-theme="light"] .wg-tab-active {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.18) !important;
+}
+
+/* ── Reset button on graph ── */
+[data-theme="light"] .wg-graph button {
+  background: rgba(255,255,255,0.95) !important;
+  color: #333333 !important;
+  border-color: #CCCCCC !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT MODE – EMBEDDED WORKFLOWS
+   ═══════════════════════════════════════════════════════════ */
+
+/* Outer page wrapper bg-black */
+[data-theme="light"] .workflows-layout,
+[data-theme="light"] .flex.flex-col.h-full {
+  background: #F5F5F5 !important;
+}
+
+/* Main content scroll area bg-black */
+[data-theme="light"] main.flex-1 {
+  background: #F5F5F5 !important;
+}
+
+/* Page header */
+[data-theme="light"] .workflows-header {
+  background: #FFFFFF !important;
+  border-bottom-color: #E0E0E0 !important;
+}
+[data-theme="light"] .workflows-header h1 { color: #111111 !important; }
+[data-theme="light"] .workflows-header > div > p { color: #555555 !important; }
+
+/* Header stat chips (bg-[#121212]) – target by flex+border+rounded-full pattern */
+[data-theme="light"] .workflows-header .flex.items-center.gap-2.px-3 {
+  background: #EEEEEE !important;
+  border-color: #DDDDDD !important;
+  color: #333333 !important;
+}
+[data-theme="light"] .workflows-header .flex.items-center.gap-2.px-3 span {
+  color: #333333 !important;
+}
+
+/* Search input */
+[data-theme="light"] .workflows-header input[type="text"] {
+  background: #F0F0F0 !important;
+  border-color: #CCCCCC !important;
+  color: #111111 !important;
+}
+[data-theme="light"] .workflows-header input[type="text"]::placeholder {
+  color: #999999 !important;
+}
+
+/* Industry sidebar */
+[data-theme="light"] aside.industry-sidebar {
+  background: #FAFAFA !important;
+  border-right-color: #E0E0E0 !important;
+}
+[data-theme="light"] aside.industry-sidebar h4 { color: #888888 !important; }
+/* All sidebar buttons */
+[data-theme="light"] aside.industry-sidebar button { color: #444444 !important; }
+/* Selected button */
+[data-theme="light"] aside.industry-sidebar .text-white { color: #111111 !important; }
+[data-theme="light"] aside.industry-sidebar .text-gray-400 { color: #555555 !important; }
+[data-theme="light"] aside.industry-sidebar .text-gray-500 { color: #666666 !important; }
+[data-theme="light"] aside.industry-sidebar .text-gray-600 { color: #777777 !important; }
+[data-theme="light"] aside.industry-sidebar .border-white\/5 { border-color: #E0E0E0 !important; }
+/* "N Available" dot */
+[data-theme="light"] aside.industry-sidebar .bg-gray-700 { background: #BBBBBB !important; }
+
+/* Pack card text — Tailwind text-white is used in pack card area */
+[data-theme="light"] .pack-grid .text-white { color: #111111 !important; }
+[data-theme="light"] .pack-grid .text-gray-400 { color: #555555 !important; }
+[data-theme="light"] .pack-grid .text-gray-500 { color: #666666 !important; }
+[data-theme="light"] .pack-grid .text-gray-300 { color: #333333 !important; }
+
+/* Comparison table */
+[data-theme="light"] .comparison-wrap .text-white { color: #111111 !important; }
+[data-theme="light"] .comparison-wrap .text-gray-400 { color: #555555 !important; }
+
+/* Modal text */
+[data-theme="light"] .activation-modal .text-white { color: #111111 !important; }
+[data-theme="light"] .activation-modal .text-gray-400 { color: #555555 !important; }
+[data-theme="light"] .activation-modal .text-gray-300 { color: #333333 !important; }
+[data-theme="light"] .activation-modal .text-gray-500 { color: #666666 !important; }
+[data-theme="light"] .activation-modal .bg-white\/5 {
+  background: rgba(0,0,0,0.04) !important;
+  border-color: rgba(0,0,0,0.10) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT MODE – DAILY BRIEFING (AI Briefing page)
+   ═══════════════════════════════════════════════════════════ */
+
+/* Root container */
+[data-theme="light"] .briefing-view { background: #F4F4F6 !important; }
+
+/* Greeting header */
+[data-theme="light"] .briefing-view .greeting-header {
+  background: linear-gradient(135deg, rgba(0,188,240,0.04) 0%, rgba(7,216,124,0.04) 100%) !important;
+  border-bottom-color: #E0E0E0 !important;
+}
+/* "Good morning, Kris" – large h1 with hardcoded color #E8F4F8 */
+[data-theme="light"] .briefing-view .greeting-header h1 { color: #111111 !important; }
+[data-theme="light"] .briefing-view .greeting-header p  { color: #555555 !important; }
+
+/* Briefing player box (bg #0D0D0D inline style) */
+[data-theme="light"] .briefing-view div[style*="background: '#0D0D0D'"],
+[data-theme="light"] .briefing-view div[style*="background: \"#0D0D0D\""],
+[data-theme="light"] .briefing-view div[style*="background: rgb(13"] {
+  background: #FFFFFF !important;
+  border-color: #E0E0E0 !important;
+}
+
+/* Player time-code labels */
+[data-theme="light"] .briefing-view span[style*="color: '#8E8E93'"],
+[data-theme="light"] .briefing-view span[style*="color: \"#8E8E93\""] { color: #666666 !important; }
+[data-theme="light"] .briefing-view span[style*="color: '#5E5E63'"],
+[data-theme="light"] .briefing-view span[style*="color: \"#5E5E63\""] { color: #888888 !important; }
+
+/* BriefingSection titles (hardcoded #E8F4F8) */
+[data-theme="light"] .briefing-view span[style*="color: '#E8F4F8'"],
+[data-theme="light"] .briefing-view span[style*="color: \"#E8F4F8\""],
+[data-theme="light"] .briefing-view div[style*="color: '#E8F4F8'"],
+[data-theme="light"] .briefing-view strong[style*="color: '#E8F4F8'"] { color: #111111 !important; }
+
+/* Body text (#C0C0C8) */
+[data-theme="light"] .briefing-view span[style*="color: '#C0C0C8'"],
+[data-theme="light"] .briefing-view div[style*="color: '#C0C0C8'"],
+[data-theme="light"] .briefing-view p[style*="color: '#C0C0C8'"] { color: #444444 !important; }
+
+/* Secondary text (#A0A0A8) */
+[data-theme="light"] .briefing-view div[style*="color: '#A0A0A8'"],
+[data-theme="light"] .briefing-view span[style*="color: '#A0A0A8'"] { color: #555555 !important; }
+
+/* Muted (#8E8E93) spans outside of player (section chevrons, etc) */
+[data-theme="light"] .briefing-view .briefing-section span[style*="color: '#8E8E93'"] { color: #888888 !important; }
+
+/* Decision cards (#121212 bg) */
+[data-theme="light"] .briefing-view div[style*="background: '#121212'"],
+[data-theme="light"] .briefing-view div[style*="background: \"#121212\""],
+[data-theme="light"] .briefing-view div[style*="background: rgb(18, 18, 18)"] {
+  background: #EEEEEE !important;
+  border-color: #DDDDDD !important;
+}
+
+/* Meeting chips in WhatMatters (bg #0D0D0D) */
+[data-theme="light"] .briefing-view span[style*="background: '#0D0D0D'"],
+[data-theme="light"] .briefing-view span[style*="background: \"#0D0D0D\""] {
+  background: #E8E8E8 !important;
+  color: #333333 !important;
+  border-color: #CCCCCC !important;
+}
+
+/* Section dividers */
+[data-theme="light"] .briefing-view .briefing-section {
+  background: transparent !important;
+  border-color: #E0E0E0 !important;
+}
+
+/* Source meetings row (bg #121212) */
+[data-theme="light"] .briefing-view div[style*="background: '#121212'"] {
+  background: #EEEEEE !important;
+}
+
+/* ── AI Chat chatbot visibility & variables fallback ── */
+[data-theme="light"] .chat-message-assistant {
+  background: #EBEBEB !important;
+  color: #111111 !important;
+}
+[data-theme="light"] .chat-message-user {
+  background: rgba(0,188,240,0.10) !important;
+}
+[data-theme="light"] .briefing-checkbox {
+  border-color: #666 !important;
+}
+[data-theme="light"] .wg-tab-container-inner {
+  background: #EBEBEB !important;
+}
+[data-theme="light"] .wg-reset-btn {
+  background: rgba(255,255,255,0.95) !important;
+  color: #333333 !important;
+  border-color: #CCCCCC !important;
+}
+[data-theme="light"] .briefing-diff-card {
+  background: #E8F7EE !important;
+}
+[data-theme="light"] .active-badge {
+  background: #E8F7EE !important;
+  color: #06B869 !important;
+}
+[data-theme="light"] .workflows-layout,
+[data-theme="light"] .flex.flex-col.h-full.overflow-hidden {
+  background: #F5F5F5 !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   END OF LIGHT MODE OVERRIDES
+   ───────────────────────────────────────────────────────────── */
+
+
+/* "6 meetings" strong label text */
+[data-theme="light"] .briefing-view strong[style*="color: '#E8F4F8'"] { color: #111111 !important; }
+
+/* ── Flat catch-all: override any remaining dark-on-dark text issues in briefing ── */
+[data-theme="light"] .briefing-left .briefing-section button { color: var(--webex-text) !important; }
+

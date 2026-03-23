@@ -161,21 +161,21 @@ const LIVE_EVENTS = [
 
 function WorkflowCard({ workflow, isTriggering }) {
   return (
-    <div className={`workflow-card ${isTriggering ? 'workflow-card--firing' : ''}`}>
-      <div className="workflow-card-header">
+    <div className={`workflow-card ${isTriggering ? 'workflow-card--firing' : ''}`} style={{ background: 'var(--surface-card)', border: '1px solid var(--webex-border)' }}>
+      <div className="workflow-card-header" style={{ borderBottomColor: 'var(--webex-border)' }}>
         <div className={`workflow-status-dot workflow-status-dot--${workflow.status}`} />
-        <span className="workflow-name">{workflow.name}</span>
-        <span className="workflow-runs">↻ {workflow.runsToday}x today</span>
+        <span className="workflow-name" style={{ color: 'var(--webex-text)' }}>{workflow.name}</span>
+        <span className="workflow-runs" style={{ color: 'var(--webex-muted)' }}>↻ {workflow.runsToday}x today</span>
       </div>
       <div className="workflow-trigger-row">
-        <span className="workflow-label">Trigger</span>
-        <span className="workflow-value">{workflow.trigger}</span>
+        <span className="workflow-label" style={{ color: 'var(--webex-muted)' }}>Trigger</span>
+        <span className="workflow-value" style={{ color: 'var(--webex-text)' }}>{workflow.trigger}</span>
       </div>
       <div className="workflow-action-row">
-        <span className="workflow-label">Action</span>
-        <span className="workflow-value">{workflow.action}</span>
+        <span className="workflow-label" style={{ color: 'var(--webex-muted)' }}>Action</span>
+        <span className="workflow-value" style={{ color: 'var(--webex-text)' }}>{workflow.action}</span>
       </div>
-      <div className="workflow-last-run">Last run: {workflow.lastRun}</div>
+      <div className="workflow-last-run" style={{ color: 'var(--webex-muted)', borderTopColor: 'var(--webex-border)' }}>Last run: {workflow.lastRun}</div>
     </div>
   );
 }
@@ -216,45 +216,54 @@ export default function LiveWorkflowDashboard({ isActivated, onBack }) {
   }, [isActivated]);
 
   return (
-    <div className="live-dashboard bg-black min-h-full flex flex-col pt-4">
-      <header className="px-8 pb-4 flex items-center justify-between border-b border-[var(--webex-border)] shrink-0">
+    <div className="live-dashboard flex-1 w-full h-full flex flex-col pt-4 overflow-hidden" style={{ background: 'var(--webex-navy)' }}>
+      <header className="pl-8 pr-4 pb-4 flex items-center justify-between border-b shrink-0" style={{ background: 'var(--webex-navy)', borderColor: 'var(--webex-border)' }}>
         <div className="flex items-center gap-4">
           <button 
             onClick={onBack}
-            className="p-2 hover:bg-white/10 rounded-full text-gray-400 hover:text-white transition-colors"
+            className="p-2 rounded-full transition-colors"
+            style={{ color: 'var(--webex-muted)', background: 'var(--hover-overlay)' }}
           >
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-white mb-1">Patient Care Coordination Pack</h1>
-            <p className="text-sm text-gray-400">Live monitoring</p>
+            <h1 className="text-xl font-bold mb-1" style={{ color: 'var(--webex-text)' }}>Patient Care Coordination Pack</h1>
+            <p className="text-sm" style={{ color: 'var(--webex-muted)' }}>Live monitoring</p>
           </div>
         </div>
       </header>
 
       {/* Mobile Tabs */}
-      <div className="dashboard-mobile-tabs px-4 py-3 bg-[#0D0D0D] border-b border-[var(--webex-border)] md:hidden">
-        <div className="flex bg-black rounded-lg p-1 border border-white/5">
+      <div className="dashboard-mobile-tabs px-4 py-3 border-b md:hidden" style={{ background: 'var(--webex-navy)', borderColor: 'var(--webex-border)' }}>
+        <div className="flex rounded-lg p-1 border" style={{ background: 'var(--webex-navy)', borderColor: 'var(--webex-border)' }}>
           <button 
             onClick={() => setActiveTab('workflows')}
-            className={`flex-1 py-2 text-xs font-bold rounded-md transition-all ${activeTab === 'workflows' ? 'bg-[#2C2C2E] text-white shadow-sm' : 'text-gray-500'}`}
+            className={`flex-1 py-2 text-xs font-bold rounded-md transition-all ${activeTab === 'workflows' ? 'shadow-sm' : ''}`}
+            style={{ 
+              background: activeTab === 'workflows' ? 'var(--surface-card)' : 'transparent',
+              color: activeTab === 'workflows' ? 'var(--webex-text)' : 'var(--webex-muted)'
+            }}
           >
             Active Workflows
           </button>
           <button 
             onClick={() => setActiveTab('activity')}
-            className={`flex-1 py-2 text-xs font-bold rounded-md transition-all ${activeTab === 'activity' ? 'bg-[#2C2C2E] text-white shadow-sm' : 'text-gray-500'}`}
+            className={`flex-1 py-2 text-xs font-bold rounded-md transition-all ${activeTab === 'activity' ? 'shadow-sm' : ''}`}
+            style={{ 
+              background: activeTab === 'activity' ? 'var(--surface-card)' : 'transparent',
+              color: activeTab === 'activity' ? 'var(--webex-text)' : 'var(--webex-muted)'
+            }}
           >
             Live Activity
           </button>
         </div>
       </div>
 
-      <div className="live-dashboard-content flex-1 flex overflow-hidden">
+      <div className="live-dashboard-content w-full flex-1 flex overflow-hidden">
         {/* Left Panel — Active Workflows */}
-        <div className={`active-workflows-panel flex-1 p-6 overflow-y-auto custom-scrollbar border-r border-[var(--webex-border)] ${activeTab !== 'workflows' ? 'hidden md:block' : ''}`}>
+        <div className={`active-workflows-panel flex-1 p-6 overflow-y-auto custom-scrollbar border-r ${activeTab !== 'workflows' ? 'hidden md:block' : ''}`} style={{ borderColor: 'var(--webex-border)' }}>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider">Active Workflows (8)</h2>
+            <h2 className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--webex-text)' }}>Active Workflows (8)</h2>
           </div>
           <div className="workflows-grid grid grid-cols-2 gap-4">
             {CARE_WORKFLOWS.map((wf) => (
@@ -268,9 +277,9 @@ export default function LiveWorkflowDashboard({ isActivated, onBack }) {
         </div>
 
         {/* Right Panel — Live Activity Feed */}
-        <div className={`activity-feed-panel w-[400px] bg-[#0D0D0D] flex flex-col overflow-hidden shrink-0 ${activeTab !== 'activity' ? 'hidden md:block' : ''}`}>
-          <div className="activity-feed-header p-4 border-b border-[var(--webex-border)] flex justify-between items-center">
-            <span className="text-sm font-bold text-white">Live Activity</span>
+        <div className={`activity-feed-panel w-[400px] flex flex-col overflow-hidden shrink-0 ${activeTab !== 'activity' ? 'hidden md:block' : ''}`} style={{ background: 'var(--webex-navy)' }}>
+          <div className="activity-feed-header p-4 border-b flex justify-between items-center" style={{ borderColor: 'var(--webex-border)' }}>
+            <span className="text-sm font-bold" style={{ color: 'var(--webex-text)' }}>Live Activity</span>
             <div className="live-indicator">
               <span className="live-dot" />
               LIVE
@@ -281,24 +290,28 @@ export default function LiveWorkflowDashboard({ isActivated, onBack }) {
             {firedEvents.map((event, i) => (
               <div
                 key={event.id}
-                className="activity-event p-3 rounded-xl bg-white/5 border border-white/10"
-                style={{ animationDelay: `${i * 30}ms` }}
+                className="activity-event p-3 rounded-xl border"
+                style={{ 
+                  animationDelay: `${i * 30}ms`,
+                  background: 'var(--surface-card)',
+                  borderColor: 'var(--webex-border)'
+                }}
               >
                 <div className="flex items-start gap-3">
                   <span className="event-icon text-xl">{event.icon}</span>
                   <div className="event-content flex-1">
-                    <div className="text-sm font-semibold text-white">{event.title}</div>
-                    <div className="text-[13px] text-gray-400 leading-snug mt-1">{event.detail}</div>
+                    <div className="text-sm font-semibold" style={{ color: 'var(--webex-text)' }}>{event.title}</div>
+                    <div className="text-[13px] leading-snug mt-1" style={{ color: 'var(--webex-muted)' }}>{event.detail}</div>
                   </div>
                 </div>
-                <div className="mt-3 pt-2 border-t border-white/10 text-[11px] font-medium text-teal-400 text-right">
+                <div className="mt-3 pt-2 border-t text-[11px] font-medium text-teal-400 text-right" style={{ borderColor: 'var(--webex-border)' }}>
                   {event.workflowName}
                 </div>
               </div>
             ))}
 
             {firedEvents.length === 0 && (
-              <div className="feed-empty flex items-center justify-center p-8 text-sm text-gray-500 italic">
+              <div className="feed-empty flex items-center justify-center p-8 text-sm italic" style={{ color: 'var(--webex-muted)' }}>
                 <p>Waiting for triggers...</p>
               </div>
             )}
