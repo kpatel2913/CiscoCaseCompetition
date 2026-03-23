@@ -102,19 +102,12 @@ export default function Sidebar() {
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => setExpanded(!expanded)}
         >
-          <div
-            className="flex-shrink-0 flex items-center justify-center rounded-lg font-bold text-sm"
-            style={{
-              width: 32,
-              height: 32,
-              background: 'linear-gradient(135deg, #00BCF0, #000000)',
-              color: '#fff',
-              fontSize: 11,
-              letterSpacing: '-0.03em'
-            }}
-          >
-            Wx
-          </div>
+          <img 
+            src="/cisco-logo.svg" 
+            alt="Cisco" 
+            className="flex-shrink-0 object-contain"
+            style={{ width: 32, height: 32 }}
+          />
           <AnimatePresence>
             {expanded && (
               <motion.span

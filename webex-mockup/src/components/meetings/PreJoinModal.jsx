@@ -86,12 +86,11 @@ export default function PreJoinModal() {
               <TrafficLights />
               {/* Centered title */}
               <div className="flex-1 flex justify-center items-center gap-2">
-                <div
-                  className="flex items-center justify-center rounded-lg font-bold text-xs"
-                  style={{ width: 22, height: 22, background: 'linear-gradient(135deg, #00BCF0, #005E7A)', color: '#fff', fontSize: 10 }}
-                >
-                  Wx
-                </div>
+                <img 
+                  src="/cisco-logo.svg" 
+                  alt="Cisco" 
+                  style={{ width: 22, height: 22, objectFit: 'contain' }}
+                />
                 <span style={{ fontSize: 13, color: WX.muted }}>Get ready to join</span>
               </div>
               {/* Right side */}

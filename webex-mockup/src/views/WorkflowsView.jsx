@@ -296,7 +296,7 @@ export default function WorkflowsView() {
       {/* Page Header */}
       <header className="workflows-header px-8 py-6 border-b border-[var(--webex-border)] bg-[#0D0D0D] flex justify-between items-center shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Workflow Packs</h1>
+          <h1 className="text-2xl font-bold text-white mb-1">Embedded Workflows</h1>
           <p className="text-sm text-gray-400">Industry-ready automation. No IT team required.</p>
           
           <div className="flex gap-4 mt-4 workflows-stats">

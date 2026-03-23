@@ -393,12 +393,11 @@ export default function InCallView() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div
-            className="flex items-center justify-center rounded-lg font-bold"
-            style={{ width: 22, height: 22, background: 'linear-gradient(135deg, #00BCF0, #005E7A)', color: '#fff', fontSize: 10 }}
-          >
-            Wx
-          </div>
+          <img 
+            src="/cisco-logo.svg" 
+            alt="Cisco" 
+            style={{ width: 22, height: 22, objectFit: 'contain' }}
+          />
           <span className="font-medium text-sm" style={{ color: WX.text }}>
             {currentMeeting?.title || "Kris Patel's meeting"}
           </span>
