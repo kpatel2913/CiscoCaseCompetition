@@ -12,7 +12,7 @@ export default function TopBar() {
 
   return (
     <div
-      className="flex items-center flex-shrink-0 px-5 gap-4"
+      className="flex items-center justify-between flex-shrink-0 px-6"
       style={{
         height: 56,
         background: 'var(--webex-surface)',
@@ -20,8 +20,8 @@ export default function TopBar() {
         zIndex: 9
       }}
     >
-      {/* Search bar */}
-      <div className="flex-1 relative max-w-xl">
+      {/* Search bar - Left */}
+      <div className="relative w-full max-w-xl">
         <div
           className="flex items-center gap-2 rounded-xl transition-all duration-200"
           style={{
@@ -89,7 +89,7 @@ export default function TopBar() {
         </AnimatePresence>
       </div>
 
-      {/* Right side actions */}
+      {/* Right side actions - Far Right */}
       <div className="flex items-center gap-2">
         {/* Notifications */}
         <div className="relative">
@@ -189,6 +189,7 @@ export default function TopBar() {
           </AnimatePresence>
         </div>
       </div>
+
     </div>
   );
 }
